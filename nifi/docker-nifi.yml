@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  nifi1:
+    image: gridsum/nifi-cluster:1.11.4 
+    restart: always
+    ports: 
+      - "8443:8443"
+    environment:
+      NODE_HOST: nifi1.gridsum.com
+      NIFI_CLUSTER_NODE_ADDRESS: nifi1.gridsum.com
+      HTTPS_PORT: 8443
+    networks:
+      ddc-network:
+        ipv4_address: 172.32.0.20
+    extra_hosts:
+      - "nifi1.gridsum.com:172.32.0.20"
+      - "nifi2.gridsum.com:172.32.0.21"
+      - "nifi3.gridsum.com:172.32.0.22"
+  nifi2:
+    image: gridsum/nifi-cluster:1.11.4 
+    restart: always
+    ports: 
+      - "8444:8444"
+    environment:
+      NODE_HOST: nifi2.gridsum.com
+      NIFI_CLUSTER_NODE_ADDRESS: nifi2.gridsum.com
+      HTTPS_PORT: 8444
+    networks:
+      ddc-network:
+        ipv4_address: 172.32.0.21
+    extra_hosts:
+      - "nifi1.gridsum.com:172.32.0.20"
+      - "nifi2.gridsum.com:172.32.0.21"
+      - "nifi3.gridsum.com:172.32.0.22"
+  nifi3:
+    image: gridsum/nifi-cluster:1.11.4 
+    restart: always
+    ports: 
+      - "8445:8445"
+    environment:
+      NODE_HOST: nifi3.gridsum.com
+      NIFI_CLUSTER_NODE_ADDRESS: nifi3.gridsum.com
+      HTTPS_PORT: 8445
+    networks:
+      ddc-network:
+        ipv4_address: 172.32.0.22
+    extra_hosts:
+      - "nifi1.gridsum.com:172.32.0.20"
+      - "nifi2.gridsum.com:172.32.0.21"
+      - "nifi3.gridsum.com:172.32.0.22"
+
+networks:
+  ddc-network:
+    external: true

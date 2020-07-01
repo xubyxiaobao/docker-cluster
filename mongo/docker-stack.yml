@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+  mongodb1:
+    image: mongo
+    volumes:
+      - mongo1-data-volume:/data/db
+      - /opt/mongodb/mongodb.key:/data/mongodb.key
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_ADMIN
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWD
+    networks: 
+      - ddc_network
+    command: mongod --replSet rs --keyFile /data/mongodb.key
+    entrypoint:
+      - bash
+      - -c
+      - |
+        chmod 400 /data/mongodb.key
+        chown 999:999 /data/mongodb.key
+        exec docker-entrypoint.sh $$@
+  mongodb2:
+    image: mongo
+    volumes:
+        - mongo2-data-volume:/data/db
+        - /opt/mongodb/mongodb.key:/data/mongodb.key
+    ports:
+        - 27018:27017
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: $MONGO_ADMIN
+        MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWD
+    networks:
+        - ddc_network
+    command: mongod --replSet rs --keyFile /data/mongodb.key
+    entrypoint:
+        - bash
+        - -c
+        - |
+          chmod 400 /data/mongodb.key
+          chown 999:999 /data/mongodb.key
+          exec docker-entrypoint.sh $$@
+  mongodb3:
+    image: mongo
+    volumes:
+        - mongo3-data-volume:/data/db
+        - /opt/mongodb/mongodb.key:/data/mongodb.key
+    ports:
+        - 27019:27017
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: $MONGO_ADMIN
+        MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWD
+    networks:
+        - ddc_network
+    command: mongod --replSet rs --keyFile /data/mongodb.key
+    entrypoint:
+        - bash
+        - -c
+        - |
+          chmod 400 /data/mongodb.key
+          chown 999:999 /data/mongodb.key
+          exec docker-entrypoint.sh $$@
+volumes: 
+  mongo1-data-volume:
+  mongo2-data-volume:
+  mongo3-data-volume:
+networks:
+  ddc_network:
+    external: true

@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  zoo1:
+    image: zookeeper:3.6.1
+    hostname: zoo1
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    volumes:
+      - zoo1-data-volume:/data
+      - zoo1-datalog-volume:/datalog
+      - zoo1-log-volume:/logs
+    networks:
+      ddc_network:
+  zoo2:
+    image: zookeeper:3.6.1
+    hostname: zoo2
+    ports:
+      - 2182:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    volumes:
+      - zoo2-data-volume:/data
+      - zoo2-datalog-volume:/datalog
+      - zoo2-log-volume:/logs
+    networks:
+      ddc_network:
+  zoo3:
+    image: zookeeper:3.6.1
+    hostname: zoo3
+    ports:
+      - 2183:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+    volumes:
+      - zoo3-data-volume:/data
+      - zoo3-datalog-volume:/datalog
+      - zoo3-log-volume:/logs
+    networks:
+      ddc_network:
+
+
+volumes:
+  zoo1-data-volume:
+  zoo1-datalog-volume:
+  zoo1-log-volume:
+  zoo2-data-volume:
+  zoo2-datalog-volume:
+  zoo2-log-volume:
+  zoo3-data-volume:
+  zoo3-datalog-volume:
+  zoo3-log-volume:
+networks:
+  ddc_network:

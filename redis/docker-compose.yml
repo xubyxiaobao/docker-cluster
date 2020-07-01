@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+  redis1:
+    image: gridsum/redis:6.0.5
+    hostname: redis1
+    ports:
+      - 6379:6379
+    environment:
+      REDIS_BIND: "0.0.0.0"
+    volumes:
+      - redis1-volume:/redis
+    networks:
+      ddc_network:
+  redis2:
+    image: gridsum/redis:6.0.5
+    hostname: redis2
+    ports:
+      - 6380:6379
+    environment:
+      REDIS_BIND: "0.0.0.0"
+      REDIS_SLAVEOF: "redis1 6379"
+    volumes:
+      - redis2-volume:/redis
+    networks:
+      ddc_network:
+  redis3:
+    image: gridsum/redis:6.0.5
+    hostname: redis3
+    ports:
+      - 6381:6379
+    environment:
+      REDIS_BIND: "0.0.0.0"
+      REDIS_SLAVEOF: "redis1 6379"
+    volumes:
+      - redis3-volume:/redis
+    networks:
+      ddc_network:
+  sentinel:
+    image: gridsum/redis:6.0.5
+    ports:
+        - 26379
+    environment:
+        SENTINEL1_SENTINEL_MONITOR_MYMASTER: "redis1 6379 2"
+        SENTINEL2_SENTINEL_DOWN__AFTER__MILLISECONDS_MYMASTER: 60000
+        SENTINEL3_SENTINEL_FAILOVER__TIMEOUT_MYMASTER: 180000
+        SENTINEL4_SENTINEL_PARALLEL__SYNCS_MYMASTER: 1 
+    command: ["redis-sentinel"]
+    networks:
+        ddc_network:     
+ 
+volumes:
+  redis1-volume:
+  redis2-volume:
+  redis3-volume:
+  sentinel1-volume:
+networks:
+  ddc_network:

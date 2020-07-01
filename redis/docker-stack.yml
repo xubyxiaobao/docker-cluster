@@ -1,0 +1,104 @@
+version: '3.8'
+services:
+  redis1:
+    image: 192.168.33.100:5000/gridsum/redis:6.0.5
+    ports:
+      - 6379:6379
+    environment:
+      REDIS_BIND: "0.0.0.0"
+      REDIS_PROTECTED__MODE: "NO"
+    volumes:
+      - redis1-volume:/redis
+    networks:
+      ddc_network:
+        ipv4_address: 172.30.0.21
+  redis2:
+    image: 192.168.33.100:5000/gridsum/redis:6.0.5
+    ports:
+      - 6380:6379
+    environment:
+      REDIS_BIND: "0.0.0.0"
+      REDIS_SLAVEOF: "redis1 6379"
+      REDIS_PROTECTED__MODE: "NO"
+    volumes:
+      - redis2-volume:/redis
+    networks:
+      ddc_network:
+        ipv4_address: 172.30.0.22
+  redis3:
+    image: 192.168.33.100:5000/gridsum/redis:6.0.5
+    ports:
+      - 6381:6379
+    environment:
+      REDIS_BIND: "0.0.0.0"
+      REDIS_SLAVEOF: "redis1 6379"
+      REDIS_PROTECTED__MODE: "NO"
+    volumes:
+      - redis3-volume:/redis
+    networks:
+      ddc_network:
+       ipv4_address: 172.30.0.23
+  sentinel1:
+    image: 192.168.33.100:5000/gridsum/redis:6.0.5
+    ports:
+        - 26379
+    environment:
+        SENTINEL1_SENTINEL_MONITOR_MYMASTER: "redis1 6379 2"
+        #监控到指定的集群的主节点异常状态持续多久方才将标记为“故障” 10秒
+        SENTINEL2_SENTINEL_DOWN__AFTER__MILLISECONDS_MYMASTER: 10000
+        #sentinel必须在此指定的时长内完成故障转移操作，否则，将视为故障转移操作失败；
+        SENTINEL3_SENTINEL_FAILOVER__TIMEOUT_MYMASTER: 30000
+        SENTINEL4_SENTINEL_PARALLEL__SYNCS_MYMASTER: 1 
+        #SENTINEL0_DAEMONIZE: YES
+    command: ["redis-sentinel"]
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    networks:
+        ddc_network:     
+  sentinel2:
+    image: 192.168.33.100:5000/gridsum/redis:6.0.5
+    ports:
+        - 26379
+    environment:
+        SENTINEL1_SENTINEL_MONITOR_MYMASTER: "redis1 6379 2"
+        #监控到指定的集群的主节点异常状态持续多久方才将标记为“故障” 10秒
+        SENTINEL2_SENTINEL_DOWN__AFTER__MILLISECONDS_MYMASTER: 10000
+        #sentinel必须在此指定的时长内完成故障转移操作，否则，将视为故障转移操作失败；
+        SENTINEL3_SENTINEL_FAILOVER__TIMEOUT_MYMASTER: 30000
+        SENTINEL4_SENTINEL_PARALLEL__SYNCS_MYMASTER: 1 
+    command: ["redis-sentinel"]
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    networks:
+        ddc_network:
+  sentinel3:
+    image: 192.168.33.100:5000/gridsum/redis:6.0.5
+    ports:
+        - 26379
+    environment:
+        SENTINEL1_SENTINEL_MONITOR_MYMASTER: "redis1 6379 2"
+        #监控到指定的集群的主节点异常状态持续多久方才将标记为“故障” 10秒
+        SENTINEL2_SENTINEL_DOWN__AFTER__MILLISECONDS_MYMASTER: 10000
+        #sentinel必须在此指定的时长内完成故障转移操作，否则，将视为故障转移操作失败；
+        SENTINEL3_SENTINEL_FAILOVER__TIMEOUT_MYMASTER: 30000
+        SENTINEL4_SENTINEL_PARALLEL__SYNCS_MYMASTER: 1 
+    command: ["redis-sentinel"]
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    networks:
+        ddc_network:     
+volumes:
+  redis1-volume:
+  redis2-volume:
+  redis3-volume:
+
+networks:
+  ddc_network:
+    name: ddc_network
+    driver: overlay
