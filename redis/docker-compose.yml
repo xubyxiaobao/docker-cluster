@@ -1,57 +1,58 @@
 version: '3.8'
 services:
   redis1:
-    image: gridsum/redis:6.0.5
-    hostname: redis1
+    image: gridsum/redis:5.0.9
     ports:
       - 6379:6379
     environment:
-      REDIS_BIND: "0.0.0.0"
+      PASSWORD: "123456"
     volumes:
-      - redis1-volume:/redis
+      - redis1-volume:/data
     networks:
-      ddc_network:
+      ddc-network:
   redis2:
-    image: gridsum/redis:6.0.5
-    hostname: redis2
+    image: gridsum/redis:5.0.9
     ports:
       - 6380:6379
     environment:
-      REDIS_BIND: "0.0.0.0"
-      REDIS_SLAVEOF: "redis1 6379"
+      PASSWORD: "123456"
+      SLAVEOF: "redis1 6379"
     volumes:
-      - redis2-volume:/redis
+      - redis2-volume:/data
     networks:
-      ddc_network:
+      ddc-network:
   redis3:
-    image: gridsum/redis:6.0.5
-    hostname: redis3
+    image: gridsum/redis:5.0.9
     ports:
       - 6381:6379
     environment:
-      REDIS_BIND: "0.0.0.0"
-      REDIS_SLAVEOF: "redis1 6379"
+      PASSWORD: "123456"
+      SLAVEOF: "redis1 6379"
     volumes:
-      - redis3-volume:/redis
+      - redis3-volume:/data
     networks:
-      ddc_network:
-  sentinel:
-    image: gridsum/redis:6.0.5
+      ddc-network:
+  sentinel1:
+    image: gridsum/redis:5.0.9
     ports:
-        - 26379
+      - 6381:6379
     environment:
-        SENTINEL1_SENTINEL_MONITOR_MYMASTER: "redis1 6379 2"
-        SENTINEL2_SENTINEL_DOWN__AFTER__MILLISECONDS_MYMASTER: 60000
-        SENTINEL3_SENTINEL_FAILOVER__TIMEOUT_MYMASTER: 180000
-        SENTINEL4_SENTINEL_PARALLEL__SYNCS_MYMASTER: 1 
-    command: ["redis-sentinel"]
+      PORT: 26379
+      SENTINEL_NAME: "mymaster"
+      SENTINEL_MASTER: "redis1 6379 2"
+      SENTINEL_AUTHPASS: "123456"
+    volumes:
+      - sentinel1-volume:/data
     networks:
-        ddc_network:     
- 
+      ddc-network:
+
 volumes:
   redis1-volume:
   redis2-volume:
   redis3-volume:
   sentinel1-volume:
+  sentinel2-volume:
+  sentinel3-volume:
 networks:
-  ddc_network:
+  ddc-network:
+    external: true
