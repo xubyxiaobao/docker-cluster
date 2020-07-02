@@ -11,3 +11,6 @@ COPY ./redis.conf  ./sentinel.conf ./docker-entrypoint.sh /data/
 RUN chown redis:redis /data/* \
     && chmod a+x /data/docker-entrypoint.sh \
     && \mv /data/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["redis-server"]
