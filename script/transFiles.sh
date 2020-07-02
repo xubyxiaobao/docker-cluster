@@ -2,9 +2,10 @@
 
 dir=$(cd $(dirname evn.sh);pwd)
 
-include_files="evn.sh,start.sh,stop.sh,../mongo"
-#desc_path="root@192.168.33.21:/opt/docker/"
-desc_path="root@192.168.1.181:/opt/docker/"
+#include_files="evn.sh,start.sh,stop.sh,../redis"
+include_files="../redis"
+desc_path="root@192.168.33.21:/opt/docker/"
+#desc_path="root@192.168.1.181:/opt/docker/"
 
 OLD_IFS="$IFS"
 IFS=","

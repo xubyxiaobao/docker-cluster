@@ -19,7 +19,7 @@ fi
 
 if $isCreateNet; then
     #创建网络
-    docker network create --driver overlay --subnet=$SUBNET --gateway=$GATEWAY $NETWORK
+    docker network create --attachable=true --driver overlay --subnet=$SUBNET --gateway=$GATEWAY $NETWORK
     if [ $? == 0 ]; then
         echo "${NETWORK}创建成功"
     else
@@ -39,11 +39,13 @@ fi
 
 
 
-echo "开始启动mongoDB集群：$MONGO_CLUSTER_NAME"
-docker stack deploy -c $dir/$MONGO_FILE $MONGO_CLUSTER_NAME
-checkUP $MONGO_CLUSTER_NAME 3
-
-echo "mongodb 副本集初始化"
-docker run --rm -it --network=$NETWORK --entrypoint mongo \
-mongo --host mongodb1 --username ${MONGO_ADMIN} --password ${MONGO_PASSWD} \
---eval 'config={"_id":"rs","members":[{"_id":0,"host":"mongodb1:27017"},{"_id":1,"host":"mongodb2:27017"},{"_id":2,"host":"mongodb3:27017"}]};rs.initiate(config);'
+#echo "开始启动mongoDB集群：$MONGO_CLUSTER_NAME"
+#docker stack deploy -c $dir/$MONGO_FILE $MONGO_CLUSTER_NAME
+#checkUP $MONGO_CLUSTER_NAME 3
+#
+#echo "等待30秒..."
+#sleep 30
+#echo "mongodb 副本集初始化"
+#docker run --rm -it --network=$NETWORK --entrypoint mongo \
+#gridsum/mongo:4.2.8 --host mongodb1 --username ${MONGO_ADMIN} --password ${MONGO_PASSWD} \
+#--eval 'config={"_id":"rs","members":[{"_id":0,"host":"mongodb1:27017"},{"_id":1,"host":"mongodb2:27017"},{"_id":2,"host":"mongodb3:27017"}]};rs.initiate(config);'

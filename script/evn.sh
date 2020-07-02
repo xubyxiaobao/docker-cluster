@@ -16,8 +16,8 @@ MONGO_FILE="mongo/docker-stack.yml"
 MONGO_CLUSTER_NAME="mongo_cluster"
 
 #mogodb副本集初始化账号
-export MONGO_ADMIN=root
-export MONGO_PASSWD=root
+export MONGO_ADMIN="root"
+export MONGO_PASSWD="root"
 
 
 function checkUP(){
