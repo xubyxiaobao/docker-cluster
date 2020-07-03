@@ -11,7 +11,7 @@ services:
       KAFAK_NUM_PARTITION: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
-      - kafka-data-volume1:/kafka
+      - kafka1-data-volume:/kafka
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
@@ -37,7 +37,7 @@ services:
       KAFAK_NUM_PARTITION: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
-      - kafka-data-volume2:/kafka
+      - kafka2-data-volume:/kafka
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
@@ -63,7 +63,7 @@ services:
       KAFAK_NUM_PARTITION: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
-      - kafka-data-volume3:/kafka
+      - kafka3-data-volume:/kafka
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:

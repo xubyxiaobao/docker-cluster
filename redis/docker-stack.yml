@@ -100,5 +100,4 @@ volumes:
 
 networks:
   ddc_network:
-    name: ddc_network
-    driver: overlay
+    external: true

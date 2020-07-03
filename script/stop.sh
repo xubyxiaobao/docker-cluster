@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##加载变量
-source ./evn.sh
+source env.sh
 dir=$(cd $(dirname evn.sh);pwd)
 
 

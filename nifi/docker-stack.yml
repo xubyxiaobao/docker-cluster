@@ -1,0 +1,61 @@
+version: '3.8'
+services:
+  openldap:
+    image: osixia/openldap:1.4.0
+    ports:
+      - "389:389"
+      - "636:636"
+    environment:
+      LDAP_ORGANISATION: "gridsum"
+      LDAP_DOMAIN: "gridsum.com"
+      LDAP_ADMIN_PASSWORD: "123456"
+    networks:
+      ddc_network:
+  ldapadmin:
+    image: osixia/phpldapadmin
+    ports:
+      - "28080:80"
+    environment:
+      PHPLDAPADMIN_HTTPS: "false"
+      PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+    networks:
+      ddc_network:
+  nifi1:
+    image: gridsum/nifi-cluster:1.11.4 
+    ports:
+      - "8443:8443"
+    hostname: nifi1.gridsum.com
+    environment:
+      NODE_HOST: nifi1.gridsum.com
+      NIFI_CLUSTER_NODE_ADDRESS: nifi1.gridsum.com
+      HTTPS_PORT: 8443
+    networks:
+      ddc_network:
+  nifi2:
+    image: gridsum/nifi-cluster:1.11.4
+    ports:
+      - "8444:8444"
+    hostname: nifi2.gridsum.com
+    environment:
+      NODE_HOST: nifi2.gridsum.com
+      NIFI_CLUSTER_NODE_ADDRESS: nifi2.gridsum.com
+      HTTPS_PORT: 8444
+    networks:
+      ddc_network:
+#  nifi3:
+#    image: gridsum/nifi-cluster:1.11.4
+#    ports:
+#      - "8445:8445"
+#    hostname: nifi3
+#    domainname: nifi3
+#    environment:
+#      NODE_HOST: nifi3
+#      NIFI_CLUSTER_NODE_ADDRESS: nifi3
+#      HTTPS_PORT: 8445
+#      SUPPORT_HOSTS: "|nifi1|nifi2|nifi3|"
+#    networks:
+#      ddc_network:
+
+networks:
+  ddc_network:
+    external: true

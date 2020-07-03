@@ -35,7 +35,7 @@ services:
   sentinel1:
     image: gridsum/redis:5.0.9
     ports:
-      - 6381:6379
+      - 6379
     environment:
       PORT: 26379
       SENTINEL_NAME: "mymaster"
@@ -45,6 +45,33 @@ services:
       - sentinel1-volume:/data
     networks:
       ddc-network:
+  sentinel2:
+    image: gridsum/redis:5.0.9
+    ports:
+      - 6379
+    environment:
+      PORT: 26379
+      SENTINEL_NAME: "mymaster"
+      SENTINEL_MASTER: "redis1 6379 2"
+      SENTINEL_AUTHPASS: "123456"
+    volumes:
+      - sentinel2-volume:/data
+    networks:
+      ddc-network:
+  sentinel3:
+    image: gridsum/redis:5.0.9
+    ports:
+      - 6379
+    environment:
+      PORT: 26379
+      SENTINEL_NAME: "mymaster"
+      SENTINEL_MASTER: "redis1 6379 2"
+      SENTINEL_AUTHPASS: "123456"
+    volumes:
+      - sentinel3-volume:/data
+    networks:
+      ddc-network:
+
 
 volumes:
   redis1-volume:

@@ -10,13 +10,6 @@ CONFIG_DIR="config"
 DEFAULT_IMAGE_TAG="gridsum/nifi-cluster:1.11.4"
 
 
-#1、创建网络
-if [ -z $(docker network ls -f name=$SUB_NET -q) ]; then
-    docker network create --subnet=172.32.0.0/16 $SUB_NET
-    echo "新建Docker子网： $SUB_NET"
-else
-    echo "使用已存在的Docker子网： $SUB_NET"
-fi
 
 
 #3、生成证书文件夹
@@ -57,10 +50,8 @@ done
 IFS="$OLD_IFS"
 
 
-
 #3、删除多余文件
 ##保留 NODE_HOSTS中的jks文件
-
 for VAR in $(ls $CURR_DIR/$CONFIG_DIR/secure)
 do
     if [[ "$NODE_HOSTS" =~ .*$VAR.* ]]; then
@@ -77,23 +68,8 @@ do
 done
 
 
-echo "网络、证书准备完成"
+echo "证书准备完成"
 
-flag=true
-while [ $flag ]
-do
-    read -t 3  -p "是否需要构建镜像(y/n,default y):" answer
-    answer=${answer:-y}
-
-    if [[ "y" == $answer || "Y" == $answer ]]; then
-        break
-    elif [[ "n" == $answer || "N" == $answer ]]; then
-        echo "退出..."
-        exit 0;
-    else
-        echo "只能填写'y'或'n'"
-    fi
-done
 
 echo "开始准备镜像，检查构建镜像配置..."
 
@@ -115,11 +91,9 @@ IFS="$OLD_IFS"
 
 echo "构建镜像配置检查完成"
 
-read -t 30 -p "请输入镜像标签(default:$DEFAULT_IMAGE_TAG)：" tag
-tag=${tag:-"$DEFAULT_IMAGE_TAG"}
 
-command="docker build -t $tag  $CURR_DIR/$CONFIG_DIR/"
-exec $command
+docker build -t gridsum/nifi-cluster:1.11.4  $CURR_DIR/$CONFIG_DIR/
+
 
 #4、启动ldap
 # docker run -p 389:389 -p 636:636 \

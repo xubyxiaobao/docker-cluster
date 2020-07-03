@@ -9,10 +9,10 @@ fi
 
 hosts=$(echo "$SUPPORT_HOSTS" | sed 's/|/,/g'|awk '{print substr($0,2,length($0)-2)}')
 
-if [[ "$SUPPORT_HOSTS" != *"|${NODE_HOST}|"* ]]; then
-    echo -e "\033[31m属性NODE_HOST必须为 ${hosts}中已存在的域名 \033[0m"
-    exit 127
-fi
+#if [[ "$SUPPORT_HOSTS" != *"|${NODE_HOST}|"* ]]; then
+#    echo -e "\033[31m属性NODE_HOST必须为 ${hosts}中已存在的域名 \033[0m"
+#    exit 127
+#fi
 
 if [[ -z "$NIFI_CLUSTER_NODE_ADDRESS" ]]; then
     echo -e "\033[31mNIFI_CLUSTER_NODE_ADDRESS必须有值 \033[0m"      ## 红色

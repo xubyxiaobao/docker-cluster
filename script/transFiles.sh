@@ -2,8 +2,8 @@
 
 dir=$(cd $(dirname evn.sh);pwd)
 
-#include_files="evn.sh,start.sh,stop.sh,../redis"
-include_files="../redis"
+include_files="env.sh,start.sh,stop.sh,common.sh,../redis,../zookeeper,../kafka,../mongo,../nifi"
+#include_files="../redis"
 desc_path="root@192.168.33.21:/opt/docker/"
 #desc_path="root@192.168.1.181:/opt/docker/"
 
