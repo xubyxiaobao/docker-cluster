@@ -1,72 +1,80 @@
 #!/bin/bash
 
+set -e
 
-# args： command:redis-server 、redis-sentinel、...
-#        configPath
-# 检查传入的第一个参数是否为redis-server
-if [[ $# < 1 ]]; then
-    echo -e "\033[31mparameter nums error!\033[0m"
-    exit   256
-fi
-exec_command=$1;
-
-prefix="REDIS"
-config_path="$REDIS_CONFIG_PATH/redis.conf"
-if [[ $exec_command == "redis-sentinel" ]]; then
-    prefix="SENTINEL"
-    config_path="$REDIS_CONFIG_PATH/sentinel.conf"
-fi
-
-echo "command is :$exec_command"
-echo "配置文件：$config_path"
+function updateConfig(){
+    key=$1
+    value=$2
+    file=$3
+    echo "[Configuring]  $file >>> $key = $value  "
+    if grep -E -q "^#?$key=" "$file"; then
+        sed -r -i "s@^$key@$key $value@g" "$file" #note that no config values may contain an '@' char
+    else
+        echo "$key $value" >> "$file"
+    fi
+}
 
 
-#检查config_path是否存在文件，如果存在则直接使用，如果不存在则使用默认，并将环境变量中redis/sentinel开头的变量转换为对应的参数
-if [[ -f $config_path ]]; then
-    echo "配置文件${config_path}已存在，不再生成对应的配置文件"
+
+# 1、确定是redis-server还是redis-sentinel
+## redis启动时的配置文件路径
+config_path="/data/redis.conf"
+if [[ $1 == "redis-server" ]]; then
+   echo -e "\033[32m 当前运行模式为 redis-server \033[0m"
+
+    if [ ! -z "$BIND_ID" ]; then
+        updateConfig "bind" "${BIND_ID}" $config_path
+    fi
+
+    if [ ! -z "$SLAVEOF" ]; then
+        updateConfig "slaveof" "${SLAVEOF}" $config_path
+    fi
+
+    if [ ! -z "$PASSWORD" ]; then
+        updateConfig "requirepass" "${PASSWORD}" $config_path
+        updateConfig "masterauth" "${PASSWORD}" $config_path
+    fi
+
+    if [ ! -z "$PROTECTED_MODE" ]; then
+        updateConfig "protected-mode" "${PROTECTED_MODE}" $config_path
+    fi
+
+    if [ ! -z "$PORT" ]; then
+        updateConfig "port" "${PORT}" $config_path
+    fi
+
 else
-    echo "不存在配置文件，根据环境变量生成对应的配置文件"
-    # 生成一份空白的配置文件
-    echo "" >> "$config_path"
+    ## 如果为哨兵模式，则更改为对应的配置文件路径
+    config_path="/data/sentinel.conf";
+    echo -e "\033[32m 当前运行模式为 redis-sentinel \033[0m"
 
-    (
-        function updateConfig(){
-            key=$1
-            value=$2
-            file=$3
-            echo "[Configuring] '$key' in '$file'"
-            echo "$key $value" >> "$file"
-
-        }
-
-        EXCLUSIONS="|REDIS_DEFAULT_CONFIG_PATH|SENTINEL_DEFAULT_CONFIG_PATH|REDIS_CONFIG_PATH|"
-
-        for VAR in $(export | cut -d' ' -f3-)
-        do
-            #获取环境变量的key
-            env_var=$(echo "$VAR" | cut -d= -f1)
-
-            #排除不需要写入配置文件的变量
-            if [[ "$EXCLUSIONS" = *"|$env_var|"* ]]; then
-                echo "Excluding $env_var from $prefix config"
-                continue
-            fi
-
-            #如果是redis-service模式
-            if [[ $env_var =~ ^REDIS_  ]]; then
-                config_name=$(echo "$env_var" | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr _ .)
-                updateConfig "$config_name" "${!env_var}" "$config_path"
-            fi
-
-            #如果是redis-sentinel模式
-            if [[ $env_var =~ ^SENTINEL[1-9]?_  ]]; then
-                config_name=$(echo "$env_var" | sed -s 's/__/-/g' | cut -d_ -f2- | tr '[:upper:]' '[:lower:]'  | tr _ " ")
-                updateConfig "$config_name" "${!env_var}" "$config_path"
-            fi
-        done
-    )
+    if [ -z "$SENTINEL_NAME" ]; then
+        SENTINEL_NAME="mymaster"
+    fi
+    if [ -z "$SENTINEL_MASTER" ]; then
+        echo -e "\033[31m sentinel模式下属性SENTINEL_MASTER必须存在，参考sentinel monitor <master-name> <ip> <redis-port> <quorum> \033[0m"
+        exit 127
+    fi
+    updateConfig "sentinel monitor  ${SENTINEL_NAME}" "${SENTINEL_MASTER}" $config_path
+    if [ ! -z "$SENTINEL_AUTHPASS" ]; then
+        updateConfig "sentinel auth-pass ${SENTINEL_NAME}" "${SENTINEL_AUTHPASS}" $config_path
+    fi
+    if [ -z "$SENTINEL_DOWN_AFTER" ]; then
+        SENTINEL_DOWN_AFTER=30000
+    fi
+    if [  -z "$SENTINEL_PARALLEL_SYNCS" ]; then
+        SENTINEL_PARALLEL_SYNCS=1
+    fi
+    if [  -z "$SENTINEL_FAILOVER_TIMEOUT" ]; then
+        SENTINEL_FAILOVER_TIMEOUT=180000
+    fi
+    updateConfig "port" "${PORT}" $config_path
+    updateConfig "sentinel down-after-milliseconds  ${SENTINEL_NAME}" "${SENTINEL_DOWN_AFTER}" $config_path
+    updateConfig "sentinel parallel-syncs ${SENTINEL_NAME}" "${SENTINEL_PARALLEL_SYNCS}" $config_path
+    updateConfig "sentinel failover-timeout ${SENTINEL_NAME}" "${SENTINEL_FAILOVER_TIMEOUT}" $config_path
 fi
 
 
-#执行命令
-exec $exec_command  $config_path
+##执行命令
+echo -e "\033[32m $1 开始启动 \033[0m"
+exec $1  $config_path
