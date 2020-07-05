@@ -18,7 +18,7 @@ ENV NODE_HOST='' \
     JAVA_ARG_2=-Xms2048m   \
 	JAVA_ARG_3=-Xmx2048m   \
     #authorizers.xml  授权   
-    SUPPORT_HOSTS="|nifi1.gridsum.com|nifi2.gridsum.com|nifi3.gridsum.com|" \
+    SUPPORT_HOSTS="|nifi1|nifi2|nifi3|" \
     #login-identity-providers.xml 认证
     INITIAL_ADMIN_IDENTITY='admin' \
     LDAP_AUTHENTICATION_STRATEGY='SIMPLE' \
@@ -39,25 +39,20 @@ ENV NODE_HOST='' \
 
 
 RUN  mkdir  ${NIFI_BASE_DIR}/tmp
-COPY ./bootstrap.conf  ./bootstrap-notification-services.xml  ./authorizers.xml \
-     ./login-identity-providers.xml  ./nifi.properties   ./state-management.xml \
-     ./logback.xml ./nifi-cluster.sh  ./secure/  ${NIFI_BASE_DIR}/tmp/
+COPY config/bootstrap.conf  config/bootstrap-notification-services.xml  config/authorizers.xml \
+     config/login-identity-providers.xml  config/nifi.properties   config/state-management.xml \
+     config/logback.xml config/nifi-cluster.sh  config/secure/  ${NIFI_BASE_DIR}/tmp/
 
 USER root
 
 RUN chown -R nifi:nifi ${NIFI_BASE_DIR}/tmp/* \
    && chmod a+x ${NIFI_BASE_DIR}/tmp/nifi-cluster.sh \
    && cp ${NIFI_BASE_DIR}/tmp/nifi-cluster.sh  ${NIFI_BASE_DIR}/scripts/ 
-  
 
- 
 
 USER nifi
 
 EXPOSE ${HTTPS_PORT}
-
-# 运行 nifi-cluster.sh
-
 
 ENTRYPOINT ["../scripts/nifi-cluster.sh"]
 

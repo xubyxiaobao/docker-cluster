@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   kafka1:
-    image: wurstmeister/kafka:2.12-2.5.0
+    image: ${kafka_image}
     ports:
       - 9092
     environment:
@@ -27,7 +27,7 @@ services:
         limits:
           memory: 2048M
   kafka2:
-    image: wurstmeister/kafka:2.12-2.5.0
+    image: ${kafka_image}
     ports:
       - 9092
     environment:
@@ -53,7 +53,7 @@ services:
         limits:
           memory: 2048M
   kafka3:
-    image: wurstmeister/kafka:2.12-2.5.0
+    image: ${kafka_image}
     ports:
       - 9092
     environment:

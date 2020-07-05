@@ -1,15 +1,15 @@
 #!/bin/bash
 
-echo "开始进行镜像构建：gridsum/redis:5.0.9"
+yellowMsg "开始进行镜像构建：${redis_image}"
 
 dir=$(cd $(dirname $0);pwd);
-
+echo "$0"
 
 # 开始构建 mongodb镜像
-docker build -t gridsum/redis:5.0.9 ${dir}/
+docker build -t ${redis_image} ${dir}/
 
 if [ $? -ne 0 ]; then
-    echo -e "\033[31m构建镜像 gridsum/redis:5.0.9 失败\033[0m"
+    redMsg "构建镜像 ${redis_image} 失败"
     exit 127
 fi
 

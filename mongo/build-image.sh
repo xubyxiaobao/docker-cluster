@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "开始进行镜像构建：gridsum/mongo:4.2.8"
+echo "开始进行镜像构建：${mongo_image}"
 
 dir=$(cd $(dirname $0);pwd);
 
@@ -8,10 +8,10 @@ dir=$(cd $(dirname $0);pwd);
 openssl rand -base64 512 > $dir/mongodb.key
 
 # 开始构建 mongodb镜像
-docker build -t gridsum/mongo:4.2.8 ${dir}/
+docker build -t ${mongo_image} ${dir}/
 
 if [ $? -ne 0 ]; then
-    echo -e "\033[31m构建镜像 gridsum/mongo:4.2.8 失败\033[0m"
+    echo -e "\033[31m构建镜像 ${mongo_image} 失败\033[0m"
     exit 127
 fi
 

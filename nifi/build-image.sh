@@ -5,7 +5,7 @@ TRUSTSTORE_PASSWORD=rHkWR1gDNW3R9hgbeRsT3OM3Ue0zwGtQqcFKJD2EXWE
 CURR_DIR=$(cd $(dirname $0); pwd)
 SUB_NET=ddc-network
 # 每个节点的域名
-NODE_HOSTS="nifi1.gridsum.com,nifi2.gridsum.com,nifi3.gridsum.com"
+NODE_HOSTS="nifi1,nifi2,nifi3"
 CONFIG_DIR="config"
 DEFAULT_IMAGE_TAG="gridsum/nifi-cluster:1.11.4"
 
@@ -49,34 +49,12 @@ do
 done
 IFS="$OLD_IFS"
 
-
-#3、删除多余文件
-##保留 NODE_HOSTS中的jks文件
-for VAR in $(ls $CURR_DIR/$CONFIG_DIR/secure)
-do
-    if [[ "$NODE_HOSTS" =~ .*$VAR.* ]]; then
-        #保留jks文件
-        for file in $(ls $CURR_DIR/$CONFIG_DIR/secure/$VAR)
-        do
-            if [[ ! "$file" =~ .*jks$ ]]; then
-                echo  "删除文件$CURR_DIR/$CONFIG_DIR/secure/$VAR/$file"
-            fi
-        done
-    else
-        echo  "删除文件$CURR_DIR/$CONFIG_DIR/secure/$VAR"
-    fi
-done
-
-
 echo "证书准备完成"
-
-
 echo "开始准备镜像，检查构建镜像配置..."
 
 #检查镜像所需文件是否齐全
 NEED_FILES="authorizers.xml,bootstrap.conf,bootstrap-notification-services.xml,\
-Dockerfile,logback.xml,login-identity-providers.xml,\
-nifi.properties,nifi-cluster.sh,state-management.xml";
+logback.xml,login-identity-providers.xml,nifi.properties,nifi-cluster.sh,state-management.xml";
 OLD_IFS="$IFS"
 IFS=","
 arr=($NEED_FILES)
@@ -90,48 +68,39 @@ done
 IFS="$OLD_IFS"
 
 echo "构建镜像配置检查完成"
+docker build -t gridsum/nifi-cluster:1.11.4  $CURR_DIR/
 
 
-docker build -t gridsum/nifi-cluster:1.11.4  $CURR_DIR/$CONFIG_DIR/
 
 
-#4、启动ldap
-# docker run -p 389:389 -p 636:636 \
-# --name openldap \
-# --env LDAP_ORGANISATION="gridsum" \
-# --env LDAP_DOMAIN="gridsum.com" \
-# --env LDAP_ADMIN_PASSWORD="123456" \
-# --network=$SUB_NET -d --rm osixia/openldap:1.4.0
-
-#5、启动ldapadmin
-# docker run -it -p 80:80 \
-# --name phpldapadmin \
-# --env PHPLDAPADMIN_HTTPS=false \
-# --env PHPLDAPADMIN_LDAP_HOSTS=openldap \
-# --network=$SUB_NET -d --rm osixia/phpldapadmin
 
 
-#6、启动nifi
+#生成default.conf配置文件
+touch $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+nifi_port=8443
 
-# docker run --name nifi-cluster-2 -p 8444:8444 \
-# -e NODE_HOST=nifi2.gridsum.com \
-# -e NIFI_CLUSTER_NODE_ADDRESS=nifi2.gridsum.com \
-# -e HTTPS_PORT=8444 \
-# --network=ddc-network --ip=172.32.0.21 	\
-# --add-host=nifi1.gridsum.com:172.32.0.20 \
-# --add-host=nifi2.gridsum.com:172.32.0.21 \
-# --add-host=nifi3.gridsum.com:172.32.0.22 \
-# -it --rm  --entrypoint /bin/bash gridsum/nifi-cluster:1.11.4
+OLD_IFS="$IFS"
+IFS=","
+arr=($NODE_HOSTS)
+for nhost in ${arr[@]}
+do
+    echo "   server {                                            " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       listen $nifi_port;                              " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       server_name  $nhost;                            " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       ssl_certificate nifi-cert.pem;                  " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       ssl_certificate_key nifi-key.key;               " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       ssl_session_cache shared:SSL:1m;                " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       ssl_session_timeout 5m;                         " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       ssl_ciphers HIGH:!aNULL:!MD5;                   " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       ssl_prefer_server_ciphers on;                   " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       location / {                                    " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "           proxy_pass https://$nhost:$nifi_port/;      " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "       }                                               " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+    echo "   }                                                   " >> $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf
+done
 
 
-# docker run --name nifi-cluster-3 -p 8445:8445  \
-# -e NODE_HOST=nifi3.gridsum.com \
-# -e NIFI_CLUSTER_NODE_ADDRESS=nifi3.gridsum.com \
-# -e HTTPS_PORT=8445 \
-# --network=ddc-network --ip=172.32.0.22 	\
-# --add-host=nifi1.gridsum.com:172.32.0.20 \
-# --add-host=nifi2.gridsum.com:172.32.0.21 \
-# --add-host=nifi3.gridsum.com:172.32.0.22 \
-# -it --rm  --entrypoint /bin/bash gridsum/nifi-cluster:1.11.4
-
-
+# 将 config/secure/nifi-key.key config/secure/nifi-cert.pem  config/nginx-nifi.conf 发送到 nginx文件夹下
+nginx_dir=$(cd $(dirname $CURR_DIR);pwd)
+mv $CURR_DIR/$CONFIG_DIR/nginx-nifi.conf $CURR_DIR/$CONFIG_DIR/secure/nifi-key.key \
+    $CURR_DIR/$CONFIG_DIR/secure/nifi-cert.pem  $nginx_dir/

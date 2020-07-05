@@ -1,15 +1,15 @@
 version: '3.8'
 services:
   mongodb1:
-    image: gridsum/mongo:4.2.8
+    image: ${mongo_image}
     volumes:
       - mongo1-data-volume:/data/db
       - mongo1-config-volume:/data/configdb
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ADMIN}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWD}
+      MONGO_INITDB_ROOT_USERNAME: ${mongo_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
     networks: 
       - ddc_network
     entrypoint:
@@ -20,7 +20,7 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb2:
-    image: gridsum/mongo:4.2.8
+    image: ${mongo_image}
     volumes:
       - mongo2-data-volume:/data/db
       - mongo2-config-volume:/data/configdb
@@ -29,8 +29,8 @@ services:
     depends_on:
       - mongodb1
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ADMIN}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWD}
+      MONGO_INITDB_ROOT_USERNAME: ${mongo_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
     networks:
       - ddc_network
     entrypoint:
@@ -41,17 +41,17 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb3:
-    image: gridsum/mongo:4.2.8
+    image: ${mongo_image}
     volumes:
       - mongo3-data-volume:/data/db
-      - mongo2-config-volume:/data/configdb
+      - mongo3-config-volume:/data/configdb
     ports:
       - 27019:27017
     depends_on:
       - mongodb1
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ADMIN}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWD}
+      MONGO_INITDB_ROOT_USERNAME: ${mongo_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
     networks:
       - ddc_network
     entrypoint:

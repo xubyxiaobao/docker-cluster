@@ -8,10 +8,12 @@ function updateConfig(){
     file=$3
     echo "[Configuring]  $file >>> $key = $value  "
     if grep -E -q "^#?$key=" "$file"; then
-        sed -r -i "s@^$key@$key $value@g" "$file" #note that no config values may contain an '@' char
-    else
-        echo "$key $value" >> "$file"
+        #首先删除
+        sed -r -i "s@^#?$key@ @g" "$file"
+        sed -r -i "s@^#?$key@ @g" "$file"
     fi
+    echo "$key $value" >> "$file"
+
 }
 
 

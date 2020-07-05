@@ -22,39 +22,31 @@ services:
       ddc_network:
   nifi1:
     image: gridsum/nifi-cluster:1.11.4 
-    ports:
-      - "8443:8443"
-    hostname: nifi1.gridsum.com
+    hostname: nifi1
     environment:
-      NODE_HOST: nifi1.gridsum.com
-      NIFI_CLUSTER_NODE_ADDRESS: nifi1.gridsum.com
+      NODE_HOST: nifi1
+      NIFI_CLUSTER_NODE_ADDRESS: nifi1
       HTTPS_PORT: 8443
     networks:
       ddc_network:
   nifi2:
     image: gridsum/nifi-cluster:1.11.4
-    ports:
-      - "8444:8444"
-    hostname: nifi2.gridsum.com
+    hostname: nifi2
     environment:
-      NODE_HOST: nifi2.gridsum.com
-      NIFI_CLUSTER_NODE_ADDRESS: nifi2.gridsum.com
-      HTTPS_PORT: 8444
+      NODE_HOST: nifi2
+      NIFI_CLUSTER_NODE_ADDRESS: nifi2
+      HTTPS_PORT: 8443
     networks:
       ddc_network:
-#  nifi3:
-#    image: gridsum/nifi-cluster:1.11.4
-#    ports:
-#      - "8445:8445"
-#    hostname: nifi3
-#    domainname: nifi3
-#    environment:
-#      NODE_HOST: nifi3
-#      NIFI_CLUSTER_NODE_ADDRESS: nifi3
-#      HTTPS_PORT: 8445
-#      SUPPORT_HOSTS: "|nifi1|nifi2|nifi3|"
-#    networks:
-#      ddc_network:
+  nifi3:
+    image: gridsum/nifi-cluster:1.11.4
+    hostname: nifi3
+    environment:
+      NODE_HOST: nifi3
+      NIFI_CLUSTER_NODE_ADDRESS: nifi3
+      HTTPS_PORT: 8443
+    networks:
+      ddc_network:
 
 networks:
   ddc_network:
