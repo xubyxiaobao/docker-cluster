@@ -7,11 +7,7 @@ function updateConfig(){
     value=$2
     file=$3
     echo "[Configuring]  $file >>> $key = $value  "
-    if grep -E -q "^#?$key=" "$file"; then
-        #首先删除
-        sed -r -i "s@^#?$key@ @g" "$file"
-        sed -r -i "s@^#?$key@ @g" "$file"
-    fi
+    sed -r -i "s@^$key.*@ @g" "$file"
     echo "$key $value" >> "$file"
 
 }
@@ -71,9 +67,9 @@ else
         SENTINEL_FAILOVER_TIMEOUT=180000
     fi
     updateConfig "port" "${PORT}" $config_path
-    updateConfig "sentinel down-after-milliseconds  ${SENTINEL_NAME}" "${SENTINEL_DOWN_AFTER}" $config_path
-    updateConfig "sentinel parallel-syncs ${SENTINEL_NAME}" "${SENTINEL_PARALLEL_SYNCS}" $config_path
-    updateConfig "sentinel failover-timeout ${SENTINEL_NAME}" "${SENTINEL_FAILOVER_TIMEOUT}" $config_path
+    updateConfig "sentinel down-after-milliseconds" "${SENTINEL_NAME} ${SENTINEL_DOWN_AFTER}" $config_path
+    updateConfig "sentinel parallel-syncs" "${SENTINEL_NAME} ${SENTINEL_PARALLEL_SYNCS}" $config_path
+    updateConfig "sentinel failover-timeout" "${SENTINEL_NAME} ${SENTINEL_FAILOVER_TIMEOUT}" $config_path
 fi
 
 

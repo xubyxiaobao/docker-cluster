@@ -1,15 +1,15 @@
 version: '3.8'
 services:
   mongodb1:
-    image: ${mongo_image}
+    image: ${mongodb_image}
     volumes:
-      - mongo1-data-volume:/data/db
-      - mongo1-config-volume:/data/configdb
+      - mongodb1-data-volume:/data/db
+      - mongodb1-config-volume:/data/configdb
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${mongo_admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
+      MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
     networks: 
       - ddc_network
     entrypoint:
@@ -22,15 +22,15 @@ services:
   mongodb2:
     image: ${mongo_image}
     volumes:
-      - mongo2-data-volume:/data/db
-      - mongo2-config-volume:/data/configdb
+      - mongodb2-data-volume:/data/db
+      - mongodb2-config-volume:/data/configdb
     ports:
       - 27018:27017
     depends_on:
       - mongodb1
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${mongo_admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
+      MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
     networks:
       - ddc_network
     entrypoint:
@@ -41,17 +41,17 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb3:
-    image: ${mongo_image}
+    image: ${mongodb_image}
     volumes:
-      - mongo3-data-volume:/data/db
-      - mongo3-config-volume:/data/configdb
+      - mongodb3-data-volume:/data/db
+      - mongodb3-config-volume:/data/configdb
     ports:
       - 27019:27017
     depends_on:
       - mongodb1
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${mongo_admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password}
+      MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
     networks:
       - ddc_network
     entrypoint:
@@ -62,12 +62,12 @@ services:
       - --keyFile
       - /data/mongodb.key
 volumes:
-  mongo1-data-volume:
-  mongo1-config-volume:
-  mongo2-data-volume:
-  mongo2-config-volume:
-  mongo3-data-volume:
-  mongo3-config-volume:
+  mongodb1-data-volume:
+  mongodb1-config-volume:
+  mongodb2-data-volume:
+  mongodb2-config-volume:
+  mongodb3-data-volume:
+  mongodb3-config-volume:
 networks:
   ddc_network:
     external: true

@@ -77,6 +77,33 @@ function networkCheck(){
 
 
 
+# service
+function start(){
+    service_name=$1;
+    image_name="${service_name}_image"
+    number_name="${service_name}_nums"
+    docker_image="${!image_name}"
+    service_number=${!number_name}
+    if [ -z "$docker_image" ]; then
+        redMsg "服务${service_name}的镜像版本 ${image_name} 未进行设置"
+        exit 127
+    fi
+    if [ -z "${service_number}" ]; then
+        redMsg "服务数量参数 ${number_name} 未设置"
+        exit 127
+    fi
+    #镜像不存在则构建
+    if [  -z "$(docker images ${docker_image}  -q )" ]; then
+        [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
+    fi
+    stack_name="${service_name}${SERVICE_SUFFIX}"
+    yellowMsg  "开始部署${stack_name}服务..."
+    docker stack deploy -c ${BASE_DIR}/${service_name}/${STACK_CONFIG} ${stack_name}
+#    checkUP ${stack_name} ${service_number}
+#    [ -f "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}"
+    greenMsg "${service_name}服务部署完成，服务名称：${stack_name}"
+}
+
 
 function stop(){
     service_name=$1;

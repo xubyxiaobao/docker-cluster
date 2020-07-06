@@ -14,6 +14,8 @@ services:
     image: ${redis_image}
     ports:
       - 6380:6379
+    depends_on:
+      - redis1
     environment:
       PASSWORD: ${redis_password}
       SLAVEOF: "redis1 6379"
@@ -25,6 +27,8 @@ services:
     image: ${redis_image}
     ports:
       - 6381:6379
+    depends_on:
+      - redis1
     environment:
       PASSWORD: ${redis_password}
       SLAVEOF: "redis1 6379"

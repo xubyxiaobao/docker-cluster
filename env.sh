@@ -12,7 +12,7 @@ export SUBNET=172.32.0.0/16
 export GATEWAY=172.32.0.1
 
 #支持的服务
-export ALL_SERVICES="|zookeeper|kafka|redis|mongo|nifi|nginx|"
+export ALL_SERVICES="|zookeeper|kafka|redis|mongodb|nifi|nginx|"
 #支持的命令
 export ALL_COMMANDS="|start|stop|"
 
@@ -38,14 +38,14 @@ export redis_nums=6
 export redis_password="123456"
 
 # mongo
-export mongo_image="gridsum/mongo:4.2.8"
-export mongo_nums=3
+export mongodb_image="gridsum/mongo:4.2.8"
+export mongodb_nums=3
 ## mongo 初始管理员账号
-export mongo_admin=admin
+export mongodb_admin=admin
 ## mongo 初始管理员密码
-export mongo_password=123456
+export mongodb_password=123456
 ## 集群初始化失败重试次数(每台节点)
-export mongo_cluster_init_retry=5
+export mongodb_cluster_init_retry=5
 
 
 #nifi

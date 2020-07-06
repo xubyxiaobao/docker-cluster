@@ -3,12 +3,9 @@
 keystore_password=QKZv1hSWAFQYZ+WU1jjF5ank+l4igeOfQRp+OSbkkrs
 truststore_password=rHkWR1gDNW3R9hgbeRsT3OM3Ue0zwGtQqcFKJD2EXWE
 dir=$(cd $(dirname $0);pwd);
+#必须与docker-stack.yml文件中对应的服务名相同
 node_hosts="nifi1,nifi2,nifi3"
 config_path="config"
-# 每个节点的域名
-
-
-
 
 
 #3、生成证书文件夹
@@ -67,11 +64,7 @@ done
 IFS="$OLD_IFS"
 
 echo "构建镜像配置检查完成"
-docker build -t ${nifi_image}  ${dir}/ .
-
-
-
-
+docker build -t ${nifi_image}  ${dir}/
 
 
 #生成nginx转发配置文件
@@ -100,6 +93,6 @@ done
 
 
 # 将 config/secure/nifi-key.key config/secure/nifi-cert.pem  config/nginx-nifi.conf 移动到 nginx文件夹下
-nginx_dir=$(cd $(dirname ${dir});pwd)
+nginx_dir=$(cd ${dir}/../nginx; pwd);
 mv ${dir}/${config_path}/nginx-nifi.conf ${dir}/${config_path}/secure/nifi-key.key \
     ${dir}/${config_path}/secure/nifi-cert.pem  $nginx_dir/
