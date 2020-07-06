@@ -40,13 +40,23 @@ export redis_password="123456"
 # mongo
 export mongo_image="gridsum/mongo:4.2.8"
 export mongo_nums=3
+## mongo 初始管理员账号
 export mongo_admin=admin
+## mongo 初始管理员密码
 export mongo_password=123456
+## 集群初始化失败重试次数(每台节点)
 export mongo_cluster_init_retry=5
 
 
 #nifi
 export nifi_image="gridsum/nifi-cluster:1.11.4"
+export nifi_nums=5
+export nifi_ldap_domain="gridsum.com"
+## nifi的初始管理员为admin 密码为 nifi_ldap_admin_password
+export nifi_ldap_admin_password="123456"
+
+
 
 #nginx
 export nginx_image="gridsum/nginx:1.19.0"
+export nginx_nums=1

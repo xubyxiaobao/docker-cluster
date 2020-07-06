@@ -2,7 +2,7 @@ version: '3.8'
 services:
 
   nginx:
-    image: gridsum/nginx:1.19.0
+    image: ${nginx_image}
     ports:
       - "8443:8443"
     networks:
@@ -10,3 +10,4 @@ services:
 networks:
   ddc_network:
     external: true
+    name: ${NETWORK}

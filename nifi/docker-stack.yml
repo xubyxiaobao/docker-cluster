@@ -6,9 +6,11 @@ services:
       - "389:389"
       - "636:636"
     environment:
-      LDAP_ORGANISATION: "gridsum"
-      LDAP_DOMAIN: "gridsum.com"
-      LDAP_ADMIN_PASSWORD: "123456"
+      LDAP_DOMAIN: ${nifi_ldap_domain}
+      LDAP_ADMIN_PASSWORD: ${nifi_ldap_admin_password}
+    volumes:
+    - openldap-data-volume:/var/lib/ldap
+    - openldap-config-volume:/etc/ldap/slapd.d
     networks:
       ddc_network:
   ldapadmin:
@@ -21,33 +23,92 @@ services:
     networks:
       ddc_network:
   nifi1:
-    image: gridsum/nifi-cluster:1.11.4 
+    image: ${nifi_image}
     hostname: nifi1
+    volumes:
+      - nifi1_logs_volume:/opt/nifi/nifi-current/logs
+      - nifi1_config_volume:/opt/nifi/nifi-current/conf
+      - nifi1_state_volume:/opt/nifi/nifi-current/state
+      - nifi1_database_repository_volume:/opt/nifi/nifi-current/database_repository
+      - nifi1_flowfile_repository_volume:/opt/nifi/nifi-current/flowfile_repository
+      - nifi1_content_repository_volume:/opt/nifi/nifi-current/content_repository
+      - nifi1_provenance_repository_volume:/opt/nifi/nifi-current/provenance_repository
     environment:
       NODE_HOST: nifi1
       NIFI_CLUSTER_NODE_ADDRESS: nifi1
       HTTPS_PORT: 8443
+      LDAP_MANAGER_DN: "cn=admin,${nifi_ldap_domain}"
+      LDAP_MANAGER_PASSWORD: ${nifi_ldap_admin_password}
+      LDAP_USER_SEARCH_BASE: ${nifi_ldap_domain}
     networks:
       ddc_network:
   nifi2:
-    image: gridsum/nifi-cluster:1.11.4
+    image: ${nifi_image}
     hostname: nifi2
+    volumes:
+      - nifi2_logs_volume:/opt/nifi/nifi-current/logs
+      - nifi2_config_volume:/opt/nifi/nifi-current/conf
+      - nifi2_state_volume:/opt/nifi/nifi-current/state
+      - nifi2_database_repository_volume:/opt/nifi/nifi-current/database_repository
+      - nifi2_flowfile_repository_volume:/opt/nifi/nifi-current/flowfile_repository
+      - nifi2_content_repository_volume:/opt/nifi/nifi-current/content_repository
+      - nifi2_provenance_repository_volume:/opt/nifi/nifi-current/provenance_repository
     environment:
       NODE_HOST: nifi2
       NIFI_CLUSTER_NODE_ADDRESS: nifi2
       HTTPS_PORT: 8443
+      LDAP_MANAGER_DN: "cn=admin,${nifi_ldap_domain}"
+      LDAP_MANAGER_PASSWORD: ${nifi_ldap_admin_password}
+      LDAP_USER_SEARCH_BASE: ${nifi_ldap_domain}
     networks:
       ddc_network:
   nifi3:
-    image: gridsum/nifi-cluster:1.11.4
+    image: ${nifi_image}
     hostname: nifi3
+    volumes:
+      - nifi3_logs_volume:/opt/nifi/nifi-current/logs
+      - nifi3_config_volume:/opt/nifi/nifi-current/conf
+      - nifi3_state_volume:/opt/nifi/nifi-current/state
+      - nifi3_database_repository_volume:/opt/nifi/nifi-current/database_repository
+      - nifi3_flowfile_repository_volume:/opt/nifi/nifi-current/flowfile_repository
+      - nifi3_content_repository_volume:/opt/nifi/nifi-current/content_repository
+      - nifi3_provenance_repository_volume:/opt/nifi/nifi-current/provenance_repository
     environment:
       NODE_HOST: nifi3
       NIFI_CLUSTER_NODE_ADDRESS: nifi3
       HTTPS_PORT: 8443
+      LDAP_MANAGER_DN: "cn=admin,${nifi_ldap_domain}"
+      LDAP_MANAGER_PASSWORD: ${nifi_ldap_admin_password}
+      LDAP_USER_SEARCH_BASE: ${nifi_ldap_domain}
     networks:
       ddc_network:
 
+
+volumes:
+  openldap-data-volume:
+  openldap-config-volume:
+  nifi1_logs_volume:
+  nifi1_config_volume:
+  nifi1_state_volume:
+  nifi1_database_repository_volume:
+  nifi1_flowfile_repository_volume:
+  nifi1_content_repository_volume:
+  nifi1_provenance_repository_volume:
+  nifi2_logs_volume:
+  nifi2_config_volume:
+  nifi2_state_volume:
+  nifi2_database_repository_volume:
+  nifi2_flowfile_repository_volume:
+  nifi2_content_repository_volume:
+  nifi2_provenance_repository_volume:
+  nifi3_logs_volume:
+  nifi3_config_volume:
+  nifi3_state_volume:
+  nifi3_database_repository_volume:
+  nifi3_flowfile_repository_volume:
+  nifi3_content_repository_volume:
+  nifi3_provenance_repository_volume:
 networks:
   ddc_network:
     external: true
+    name: ${NETWORK}

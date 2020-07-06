@@ -85,3 +85,4 @@ volumes:
 networks:
   ddc_network:
     external: true
+    name: ${NETWORK}

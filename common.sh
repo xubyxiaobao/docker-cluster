@@ -76,38 +76,6 @@ function networkCheck(){
 }
 
 
-# service
-function start(){
-    service_name=$1;
-    image_name="${service_name}_image"
-    number_name="${service_name}_nums"
-
-    docker_image="${!image_name}"
-    service_number=${!number_name}
-
-
-    if [ -z "$docker_image" ]; then
-        redMsg "服务${service_name}的镜像版本 ${image_name} 未进行设置"
-        exit 127
-    fi
-
-    if [ ! "${service_number}" >0 ]; then
-        redMsg "服务数量参数 ${number_name} 未设置"
-        exit 127
-    fi
-
-    #镜像构建
-    if [ $(docker images "${docker_image}" -q | wc -l) -eq 0 ]; then
-        [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
-    fi
-    stack_name="${service_name}${SERVICE_SUFFIX}"
-    yellowMsg  "开始部署${stack_name}服务..."
-    docker stack deploy -c ${BASE_DIR}/${service_name}/${STACK_CONFIG} ${stack_name}
-    checkUP ${stack_name} ${service_number}
-    greenMsg "${service_name}服务部署完成，服务名称：${stack_name}"
-
-    [ -f "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}" ] && "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}"
-}
 
 
 function stop(){
@@ -117,3 +85,5 @@ function stop(){
     docker stack rm ${stack_name}
     greenMsg  "${service_name}已停止"
 }
+
+
