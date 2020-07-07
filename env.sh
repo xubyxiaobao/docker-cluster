@@ -5,6 +5,8 @@
 #==================================
 #全局变量
 export ENV_LOADED=loaded
+export SAVE_IMAGES="mongo:4.2.8-bionic osixia/openldap:1.4.0 redis:5.0.9 nginx:1.19.0 apache/nifi:1.11.4 osixia/phpldapadmin:latest mysql:5.7 registry:2"
+export IMAGE_DIR="images"
 
 #项目运行docker子网
 export NETWORK=ddc_network
