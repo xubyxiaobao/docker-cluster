@@ -1,4 +1,4 @@
-FROM apache/nifi:1.11.4
+FROM ${REGISTRY_HOST}apache/nifi:1.11.4
 
 #nifi.properties  集群+认证
 ENV NODE_HOST='' \

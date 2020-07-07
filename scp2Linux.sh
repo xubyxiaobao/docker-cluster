@@ -11,8 +11,8 @@ dir=$(cd $(dirname evn.sh);pwd)
 
 exclude_files="|README.md|transFiles.sh|"
 #desc_path="root@192.168.33.21:/opt/docker/"
-#desc_path="root@192.168.35.101:/opt/docker/"
-desc_path="root@192.168.1.181:/opt/docker/"
+desc_path="root@192.168.35.101:/opt/docker/"
+#desc_path="root@192.168.1.181:/opt/docker/"
 
 for file in $(ls) ; do
     absolute_path=${dir}/${file}

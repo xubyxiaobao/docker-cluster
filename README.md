@@ -6,12 +6,14 @@
   | ddc1  |  192.168.35.101 | manager |
   | ddc2  |  192.168.35.102 | manager   |
   | ddc3  |  192.168.35.103 | manager   |
+
 ## 准备工作
 ### 端口开放
 为了保证docker-swarm之间的通信，需开放如下端口
 - 2377 TCP 
 - 7946 TCP/UDP 
 - 4789 TCP/UDP
+- 5000 TCP
 ```bash
 firewall-cmd --zone=public --add-port=2377/tcp --permanent
 firewall-cmd --zone=public --add-port=7946/tcp --permanent
@@ -120,6 +122,42 @@ For more examples and ideas, visit:
 
 ```
 
+### 安装docker-registry 私服
+选取一台服务器作为私服，此次选取ddc3(192.168.35.103)为私服
+在该服务器上运行下面的命令启动私服
+```bash
+docker run -d --name registry -p 5000:5000 \
+-v /usr/local/docker/registry-image/:/tmp/registry \
+--restart=always registry
+```
+修改其余服务器(ddc1、ddc2)的docker配置文件，使之可以拉取私服镜像
+```bash
+vi /etc/docker/daemon.json
+#修改为如下所示
+{
+  "registry-mirrors": ["http://hub-mirror.c.163.com"],
+  "insecure-registries": ["192.168.35.103:5000"]
+}
+```
+
+给镜像打标签
+```bash
+docker tag redis:5.0.9 192.168.35.103:5000/redis:5.0.9
+```
+将镜像推送至私服
+```bash
+docker push 192.168.35.103:5000/redis:5.0.9
+```
+查看私服镜像列表
+```bash
+#浏览器访问
+http://192.168.35.103:5000/v2/_catalog
+```
+查看某个镜像具体版本
+```bash
+http://192.168.35.103:5000/v2/redis/tags/list
+```
+
 ### docker-swarm 初始化
 #### 1、在ddc1服务器上执行如下命令
 ```bash
@@ -186,7 +224,74 @@ usermod -aG docker xxxx
 
 
 ## 项目中脚本的使用
-### 授予项目中 *.sh可执行权限
+### 新建文件夹，将本项目所有文件都放入其中
 ```bash
-
+# 例如
+mkdir /opt/docker-clsuter
 ```
+### 授予可执行全选
+```bash
+chmod -R a+x /opt/docker-cluster/
+```
+### 启动集群
+```bash
+cd /opt/docker-cluster
+./run.sh start [serverName]
+```
+> 启动集群命令说明：
+>第一个参数：start/stop 部署集群/停止集群
+>
+>第二个参数[可选]：服务的名称，可以为 zookeeper、kafka、mongodb、redis、nifi、nginx，如果没有则启动所有服务
+
+>文件说明：env.sh启动过程中的参数配置，详情请看env.sh文件
+>
+>服务启动过程中，可以使用docker service logs -f  <服务名> 查看启动日志
+
+- 如果需要添加新的服务，需要创建一个名称为新服务的文件夹，将放入docker-stack.yml配置文件，并且在`env.sh`的变量ALL_SERVERS后追加新服务，并且添加对应的xx_image(镜像名称)、xx_nums(docker-stack.yml中包含的服务数量)
+- 如果构建该服务需要执行一些操作时，在其中放入名称为`post-handler.sh`的可执行脚本即可
+
+#### 服务说明
+##### zookeeper 
+可在docker-stack.yml文件中的对应服务中添加envrioment修改服务的配置
+`ZOO_TICK_TIME`
+`ZOO_INIT_LIMIT`
+`ZOO_SYNC_LIMIT`
+`ZOO_MAX_CLIENT_CNXNS`
+zookeeper配置修改详细地址：https://github.com/docker-library/docs/tree/master/zookeeper
+##### kafka
+可在docker-stack.xml文件中的对应服务中添加环境变量修改server.properties的配置，环境变量名称为server.properties中对应配置的key，所有字母大写，'.'转换为'_',并且添加前缀`KAFKA_'
+> 例如：需要修改 num.io.threads=8 ->  KAFKA_NUM_IO_THREADS=8。
+
+详细文档地址：https://github.com/wurstmeister/kafka-docker
+
+##### redis
+- 当reids启动模式为redis服务器时，使用配置文件路径为 /data/redis.conf
+- 当redis启动模式为sentinel服务器时，使用配置文件路径为 /data/sentinel.conf
+- 可在env.sh修改redis的密码
+- 可在环境变量中修改的配置项为
+
+| 环境变量中的名称| 属性名称 |  默认值 | 所属文件|
+| :-----: | :---: | :-----:|:---:|
+| BIND_ID  |  bind | 0.0.0.0 | redis.conf |
+| SLAVEOF  |  slaveof| null | redis.conf|
+| PASSWORD | requirepass/masterauth | null | redis.conf|
+| PORT     | port | 6379/26379 | redis.conf/sentinel.conf |
+| SENTINEL_MASTER| sentinel monitor mymaster | null | sentinel.conf |
+| SENTINEL_DOWN_AFTER|sentinel down-after-milliseconds mymaster|30000|sentinel.conf|
+| SENTINEL_PARALLEL_SYNCS|sentinel parallel-syncs mymaster|1|sentinel.conf|
+| SENTINEL_FAILOVER_TIMEOUT| sentinel failover-timeout mymaster| 180000|sentinel.conf|
+>修改redis相关配置时，如果环境边变量中包含则在环境变量中修改，否则修改redis文件夹下对应的redis.conf、sentinel配置文件，并重新构建镜像
+>enviroment修改的参数将优先于修改配置文件
+
+#### mongodb
+如果需要修改mongodb的服务参数，可在docker-stack.yml中的属性`entrypoint`后添加参数，详细请看mongod --help参数列表
+>env.sh中可修改集群初始的管理员账号/密码
+
+
+#### nifi
+- 启动nifi之前必须先启动zookeeper，nifi才能成功启动
+- 启动nifi之后必须启动nginx，否则将无法访问nifi提供的服务
+- env.sh文件中提供了nifi的管理员密码(账号默认为admin)
+
+####nginx
+nginx为外部访问nifi必备组件，必须在构建nifi之后才能构建nginx镜像

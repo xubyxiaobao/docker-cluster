@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  mysql:
+    image: ${REGISTRY_HOST}${mysql_image}
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: auth
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+      TZ: "Asia/Shanghai"
+    volumes:
+      - mysql-data-volume:/var/lib/mysql
+    networks:
+      - ddc_network
+
+volumes:
+  mysql-data-volume:
+networks:
+  ddc_network:
+    external: true
+    name: ${NETWORK}

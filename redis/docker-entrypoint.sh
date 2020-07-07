@@ -2,14 +2,20 @@
 
 set -e
 
+#配置文件覆盖
+##删除 /data/redis.conf  /data/sentinel.conf
+rm -rf /data/redis.conf /data/sentinel.conf
+cp  /data/redis_template.conf /data/redis.conf
+cp  /data/sentinel_template.conf /data/sentinel.conf
+
+
 function updateConfig(){
     key=$1
     value=$2
     file=$3
     echo "[Configuring]  $file >>> $key = $value  "
-    sed -r -i "s@^$key.*@ @g" "$file"
-    echo "$key $value" >> "$file"
-
+        sed -r -i "s@^$key.*@ @g" "$file"
+        echo "$key $value" >> "$file"
 }
 
 
@@ -20,8 +26,8 @@ config_path="/data/redis.conf"
 if [[ $1 == "redis-server" ]]; then
    echo -e "\033[32m 当前运行模式为 redis-server \033[0m"
 
-    if [ ! -z "$BIND_ID" ]; then
-        updateConfig "bind" "${BIND_ID}" $config_path
+    if [ ! -z "$BIND_IP" ]; then
+        updateConfig "bind" "${BIND_IP}" $config_path
     fi
 
     if [ ! -z "$SLAVEOF" ]; then
@@ -53,9 +59,9 @@ else
         echo -e "\033[31m sentinel模式下属性SENTINEL_MASTER必须存在，参考sentinel monitor <master-name> <ip> <redis-port> <quorum> \033[0m"
         exit 127
     fi
-    updateConfig "sentinel monitor  ${SENTINEL_NAME}" "${SENTINEL_MASTER}" $config_path
+    updateConfig "sentinel monitor" "${SENTINEL_NAME} ${SENTINEL_MASTER}" $config_path
     if [ ! -z "$SENTINEL_AUTHPASS" ]; then
-        updateConfig "sentinel auth-pass ${SENTINEL_NAME}" "${SENTINEL_AUTHPASS}" $config_path
+        updateConfig "sentinel auth-pass" "${SENTINEL_NAME} ${SENTINEL_AUTHPASS}" $config_path
     fi
     if [ -z "$SENTINEL_DOWN_AFTER" ]; then
         SENTINEL_DOWN_AFTER=30000

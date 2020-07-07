@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   mongodb1:
-    image: ${mongodb_image}
+    image: ${REGISTRY_HOST}${mongodb_image}
     volumes:
       - mongodb1-data-volume:/data/db
       - mongodb1-config-volume:/data/configdb
@@ -20,7 +20,7 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb2:
-    image: ${mongo_image}
+    image: ${REGISTRY_HOST}${mongodb_image}
     volumes:
       - mongodb2-data-volume:/data/db
       - mongodb2-config-volume:/data/configdb
@@ -41,7 +41,7 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb3:
-    image: ${mongodb_image}
+    image: ${REGISTRY_HOST}${mongodb_image}
     volumes:
       - mongodb3-data-volume:/data/db
       - mongodb3-config-volume:/data/configdb

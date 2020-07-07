@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   kafka1:
-    image: ${kafka_image}
+    image: ${REGISTRY_HOST}${kafka_image}
     ports:
       - 9092
     environment:
@@ -27,7 +27,7 @@ services:
         limits:
           memory: 2048M
   kafka2:
-    image: ${kafka_image}
+    image: ${REGISTRY_HOST}${kafka_image}
     ports:
       - 9092
     environment:
@@ -53,7 +53,7 @@ services:
         limits:
           memory: 2048M
   kafka3:
-    image: ${kafka_image}
+    image: ${REGISTRY_HOST}${kafka_image}
     ports:
       - 9092
     environment:

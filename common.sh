@@ -99,8 +99,8 @@ function start(){
     stack_name="${service_name}${SERVICE_SUFFIX}"
     yellowMsg  "开始部署${stack_name}服务..."
     docker stack deploy -c ${BASE_DIR}/${service_name}/${STACK_CONFIG} ${stack_name}
-#    checkUP ${stack_name} ${service_number}
-#    [ -f "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}"
+    checkUP ${stack_name} ${service_number}
+    [ -f "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${POST_HANDLER_SCRIPT}"
     greenMsg "${service_name}服务部署完成，服务名称：${stack_name}"
 }
 

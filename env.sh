@@ -4,9 +4,9 @@
 
 #==================================
 #全局变量
-export ENV_LOADED=loaded
 export SAVE_IMAGES="mongo:4.2.8-bionic osixia/openldap:1.4.0 redis:5.0.9 nginx:1.19.0 apache/nifi:1.11.4 osixia/phpldapadmin:latest mysql:5.7 registry:2"
 export IMAGE_DIR="images"
+export REGISTRY_HOST=192.168.35.103:5000/
 
 #项目运行docker子网
 export NETWORK=ddc_network
@@ -14,7 +14,7 @@ export SUBNET=172.32.0.0/16
 export GATEWAY=172.32.0.1
 
 #支持的服务
-export ALL_SERVICES="|zookeeper|kafka|redis|mongodb|nifi|nginx|"
+export ALL_SERVICES="|zookeeper|kafka|redis|mongodb|nifi|nginx|mysql|"
 #支持的命令
 export ALL_COMMANDS="|start|stop|"
 
@@ -48,6 +48,8 @@ export mongodb_admin=admin
 export mongodb_password=123456
 ## 集群初始化失败重试次数(每台节点)
 export mongodb_cluster_init_retry=5
+## mongodb集群初始化失败再次重试时间隔时间
+export mongodb_cluster_init_sleep=5
 
 
 #nifi
@@ -62,3 +64,8 @@ export nifi_ldap_admin_password="123456"
 #nginx
 export nginx_image="gridsum/nginx:1.19.0"
 export nginx_nums=1
+
+
+#mysql
+export mysql_image="mysql:5.7"
+export mysql_nums=1

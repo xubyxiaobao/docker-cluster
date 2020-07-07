@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "开始进行镜像构建：${mongo_image}"
+echo "开始进行镜像构建：${mongodb_image}"
 
 dir=$(cd $(dirname $0);pwd);
 
@@ -8,10 +8,13 @@ dir=$(cd $(dirname $0);pwd);
 openssl rand -base64 512 > $dir/mongodb.key
 
 # 开始构建 mongodb镜像
-docker build -t ${mongodb_image} ${dir}/
+docker build -t ${REGISTRY_HOST}${mongodb_image} ${dir}/
+
+#推送镜像至私服
+docker push ${REGISTRY_HOST}${mongodb_image}
 
 if [ $? -ne 0 ]; then
-    redMsg "构建镜像 ${mongodb_image} 失败"
+    echo -e "\033[31m构建镜像 ${mongodb_image} 失败\033[0m"
     exit 127
 fi
 

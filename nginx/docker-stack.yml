@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   nginx:
-    image: ${nginx_image}
+    image: ${REGISTRY_HOST}${nginx_image}
     ports:
       - "8443:8443"
     networks:
