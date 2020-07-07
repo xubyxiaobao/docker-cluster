@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   redis1:
-    image: ${redis_image}
+    image: ${REGISTRY_HOST}${redis_image}
     ports:
       - 6379:6379
     environment:
@@ -11,7 +11,7 @@ services:
     networks:
       ddc_network:
   redis2:
-    image: ${redis_image}
+    image: ${REGISTRY_HOST}${redis_image}
     ports:
       - 6380:6379
     depends_on:
@@ -24,7 +24,7 @@ services:
     networks:
       ddc_network:
   redis3:
-    image: ${redis_image}
+    image: ${REGISTRY_HOST}${redis_image}
     ports:
       - 6381:6379
     depends_on:
@@ -37,7 +37,7 @@ services:
     networks:
       ddc_network:
   sentinel1:
-    image: ${redis_image}
+    image: ${REGISTRY_HOST}${redis_image}
     environment:
       PORT: 26379
       SENTINEL_MASTER: "redis1 6379 2"
@@ -52,7 +52,7 @@ services:
     networks:
       ddc_network:
   sentinel2:
-    image: ${redis_image}
+    image: ${REGISTRY_HOST}${redis_image}
     environment:
       PORT: 26379
       SENTINEL_MASTER: "redis1 6379 2"
@@ -67,7 +67,7 @@ services:
     networks:
       ddc_network:
   sentinel3:
-    image: ${redis_image}
+    image: ${REGISTRY_HOST}${redis_image}
     environment:
       PORT: 26379
       SENTINEL_MASTER: "redis1 6379 2"

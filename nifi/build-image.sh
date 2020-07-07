@@ -64,7 +64,7 @@ done
 IFS="$OLD_IFS"
 
 echo "构建镜像配置检查完成"
-docker build -t ${nifi_image}  ${dir}/
+docker build -t ${REGISTRY_HOST}${nifi_image}  ${dir}/
 
 
 #生成nginx转发配置文件

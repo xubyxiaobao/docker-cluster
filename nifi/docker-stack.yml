@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   openldap:
-    image: osixia/openldap:1.4.0
+    image: ${REGISTRY_HOST}osixia/openldap:1.4.0
     ports:
       - "389:389"
       - "636:636"
@@ -14,7 +14,7 @@ services:
     networks:
       ddc_network:
   ldapadmin:
-    image: osixia/phpldapadmin
+    image: ${REGISTRY_HOST}osixia/phpldapadmin
     ports:
       - "28080:80"
     environment:
@@ -23,7 +23,7 @@ services:
     networks:
       ddc_network:
   nifi1:
-    image: ${nifi_image}
+    image: ${REGISTRY_HOST}${nifi_image}
     hostname: nifi1
     volumes:
       - nifi1_logs_volume:/opt/nifi/nifi-current/logs
@@ -43,7 +43,7 @@ services:
     networks:
       ddc_network:
   nifi2:
-    image: ${nifi_image}
+    image: ${REGISTRY_HOST}${nifi_image}
     hostname: nifi2
     volumes:
       - nifi2_logs_volume:/opt/nifi/nifi-current/logs
@@ -63,7 +63,7 @@ services:
     networks:
       ddc_network:
   nifi3:
-    image: ${nifi_image}
+    image: ${REGISTRY_HOST}${nifi_image}
     hostname: nifi3
     volumes:
       - nifi3_logs_volume:/opt/nifi/nifi-current/logs

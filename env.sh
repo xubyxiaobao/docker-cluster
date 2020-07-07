@@ -4,7 +4,7 @@
 
 #==================================
 #全局变量
-export ENV_LOADED=loaded
+export REGISTRY_HOST=192.168.35.103:5000/
 
 #项目运行docker子网
 export NETWORK=ddc_network
@@ -12,7 +12,7 @@ export SUBNET=172.32.0.0/16
 export GATEWAY=172.32.0.1
 
 #支持的服务
-export ALL_SERVICES="|zookeeper|kafka|redis|mongodb|nifi|nginx|"
+export ALL_SERVICES="|zookeeper|kafka|redis|mongodb|nifi|nginx|mysql|"
 #支持的命令
 export ALL_COMMANDS="|start|stop|"
 
@@ -62,3 +62,8 @@ export nifi_ldap_admin_password="123456"
 #nginx
 export nginx_image="gridsum/nginx:1.19.0"
 export nginx_nums=1
+
+
+#mysql
+export mysql_image="mysql:5.7"
+export mysql_nums=1

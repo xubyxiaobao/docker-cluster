@@ -1,4 +1,4 @@
-FROM mongo:4.2.8-bionic
+FROM ${REGISTRY_HOST}mongo:4.2.8-bionic
 
 #复制mongokey
 ENV MONGO_KEY_PATH=/data/mongodb.key

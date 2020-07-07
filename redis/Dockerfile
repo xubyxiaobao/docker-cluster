@@ -1,4 +1,4 @@
-FROM redis:5.0.9
+FROM ${REGISTRY_HOST}redis:5.0.9
     # redis主从所需要的配置
 ENV BIND_IP=0.0.0.0 \
     SLAVEOF="" \

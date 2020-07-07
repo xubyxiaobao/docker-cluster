@@ -6,12 +6,14 @@
   | ddc1  |  192.168.35.101 | manager |
   | ddc2  |  192.168.35.102 | manager   |
   | ddc3  |  192.168.35.103 | manager   |
+
 ## 准备工作
 ### 端口开放
 为了保证docker-swarm之间的通信，需开放如下端口
 - 2377 TCP 
 - 7946 TCP/UDP 
 - 4789 TCP/UDP
+- 5000 TCP
 ```bash
 firewall-cmd --zone=public --add-port=2377/tcp --permanent
 firewall-cmd --zone=public --add-port=7946/tcp --permanent
@@ -118,6 +120,42 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 
+```
+
+### 安装docker-registry 私服
+选取一台服务器作为私服，此次选取ddc3(192.168.35.103)为私服
+在该服务器上运行下面的命令启动私服
+```bash
+docker run -d --name registry -p 5000:5000 \
+-v /usr/local/docker/registry-image/:/tmp/registry \
+--restart=always registry
+```
+修改其余服务器(ddc1、ddc2)的docker配置文件，使之可以拉取私服镜像
+```bash
+vi /etc/docker/daemon.json
+#修改为如下所示
+{
+  "registry-mirrors": ["http://hub-mirror.c.163.com"],
+  "insecure-registries": ["192.168.35.103:5000"]
+}
+```
+
+给镜像打标签
+```bash
+docker tag redis:5.0.9 192.168.35.103:5000/redis:5.0.9
+```
+将镜像推送至私服
+```bash
+docker push 192.168.35.103:5000/redis:5.0.9
+```
+查看私服镜像列表
+```bash
+#浏览器访问
+http://192.168.35.103:5000/v2/_catalog
+```
+查看某个镜像具体版本
+```bash
+http://192.168.35.103:5000/v2/redis/tags/list
 ```
 
 ### docker-swarm 初始化

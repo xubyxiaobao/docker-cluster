@@ -2,20 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="803924c8-e0cd-4ccb-a3b6-09d2bca8ef8e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/docker-registry/export-images.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-registry/start.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mysql/docker-stack.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common.sh" beforeDir="false" afterPath="$PROJECT_DIR$/common.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kafka/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/kafka/docker-stack.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongodb/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mongodb/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/build-image.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mongodb/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongodb/post-handler.sh" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/post-handler.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/build-image.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nginx/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/docker-stack.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nifi/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nifi/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/build-image.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nifi/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/docker-stack.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/redis/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/redis/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/redis/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/redis/build-image.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/docker-entrypoint.sh" beforeDir="false" afterPath="$PROJECT_DIR$/redis/docker-entrypoint.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/redis/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/redis/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/redis.conf" beforeDir="false" afterPath="$PROJECT_DIR$/redis/redis_template.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/sentinel.conf" beforeDir="false" afterPath="$PROJECT_DIR$/redis/sentinel_template.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transFiles.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scp2Linux.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/zookeeper/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/zookeeper/docker-stack.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,24 +67,25 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/redis" />
+    <property name="jdk.selected.JAVA_MODULE" value="1.8" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/docker-registry" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vcs.patch.to.clipboard" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\IdeaProjects\docker-cluster\docker-registry" />
+      <recent name="D:\IdeaProjects\docker-cluster\mysql" />
+      <recent name="D:\IdeaProjects\docker-cluster\mongo" />
+      <recent name="D:\IdeaProjects\docker-cluster\nginx" />
+      <recent name="D:\IdeaProjects\docker-cluster" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\IdeaProjects\docker-cluster" />
       <recent name="D:\IdeaProjects\docker-cluster\nginx" />
       <recent name="D:\IdeaProjects\docker-cluster\nifi" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\IdeaProjects\docker-cluster\mongo" />
-      <recent name="D:\IdeaProjects\docker-cluster\nginx" />
-      <recent name="D:\IdeaProjects\docker-cluster" />
-      <recent name="D:\IdeaProjects\docker-cluster\redis" />
-      <recent name="D:\IdeaProjects\docker-cluster\script" />
     </key>
   </component>
   <component name="RunManager">
@@ -150,25 +157,25 @@
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state x="2383" y="122" key="FileChooserDialogImpl/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594019512621" />
-    <state width="1323" height="148" key="GridCell.Tab.0.bottom" timestamp="1594103444197">
+    <state width="1877" height="229" key="GridCell.Tab.0.bottom" timestamp="1594111416402">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1323" height="148" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594103444197" />
+    <state width="1877" height="229" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594111416402" />
     <state width="1323" height="148" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594097451617" />
-    <state width="1323" height="148" key="GridCell.Tab.0.center" timestamp="1594103444197">
+    <state width="1877" height="229" key="GridCell.Tab.0.center" timestamp="1594111416400">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1323" height="148" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594103444197" />
+    <state width="1877" height="229" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594111416400" />
     <state width="1323" height="148" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594097451617" />
-    <state width="1323" height="148" key="GridCell.Tab.0.left" timestamp="1594103444197">
+    <state width="1877" height="229" key="GridCell.Tab.0.left" timestamp="1594111416399">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1323" height="148" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594103444197" />
+    <state width="1877" height="229" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594111416399" />
     <state width="1323" height="148" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594097451617" />
-    <state width="1323" height="148" key="GridCell.Tab.0.right" timestamp="1594103444197">
+    <state width="1877" height="229" key="GridCell.Tab.0.right" timestamp="1594111416400">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1323" height="148" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594103444197" />
+    <state width="1877" height="229" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594111416400" />
     <state width="1323" height="148" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594097451617" />
     <state x="2372" y="77" key="RollbackChangesDialog" timestamp="1593771070646">
       <screen x="1920" y="0" width="1366" height="728" />
@@ -179,10 +186,18 @@
     </state>
     <state x="261" y="13" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1593772548377" />
     <state x="2106" y="9" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1593740662541" />
+    <state x="552" y="256" key="Vcs.Push.Dialog.v2" timestamp="1594103495612">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="256" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594103495612" />
     <state x="450" y="125" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1594090791822">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="450" y="125" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594090791822" />
+    <state x="605" y="224" key="new project wizard" timestamp="1594104397023">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="605" y="224" key="new project wizard/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594104397023" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1594102868513">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
