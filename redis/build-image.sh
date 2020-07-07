@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yellowMsg "开始进行镜像构建：${redis_image}"
+echo -e "\033[33m开始进行镜像构建：${redis_image}\033[0m"
 
 dir=$(cd $(dirname $0);pwd);
 
@@ -8,7 +8,7 @@ dir=$(cd $(dirname $0);pwd);
 docker build -t ${redis_image} ${dir}/
 
 if [ $? -ne 0 ]; then
-    redMsg "构建镜像 ${redis_image} 失败"
+    echo -e "\033[31m构建镜像 ${redis_image} 失败\033[0m"
     exit 127
 fi
 

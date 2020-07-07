@@ -20,7 +20,7 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb2:
-    image: ${mongo_image}
+    image: ${mongodb_image}
     volumes:
       - mongodb2-data-volume:/data/db
       - mongodb2-config-volume:/data/configdb

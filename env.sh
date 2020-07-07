@@ -46,6 +46,8 @@ export mongodb_admin=admin
 export mongodb_password=123456
 ## 集群初始化失败重试次数(每台节点)
 export mongodb_cluster_init_retry=5
+## mongodb集群初始化失败再次重试时间隔时间
+export mongodb_cluster_init_sleep=5
 
 
 #nifi

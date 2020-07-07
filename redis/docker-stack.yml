@@ -40,7 +40,6 @@ services:
     image: ${redis_image}
     environment:
       PORT: 26379
-      SENTINEL_NAME: "mymaster"
       SENTINEL_MASTER: "redis1 6379 2"
       SENTINEL_AUTHPASS: ${redis_password}
     command: redis-sentinel
@@ -56,7 +55,6 @@ services:
     image: ${redis_image}
     environment:
       PORT: 26379
-      SENTINEL_NAME: "mymaster"
       SENTINEL_MASTER: "redis1 6379 2"
       SENTINEL_AUTHPASS: ${redis_password}
     command: redis-sentinel
@@ -72,7 +70,6 @@ services:
     image: ${redis_image}
     environment:
       PORT: 26379
-      SENTINEL_NAME: "mymaster"
       SENTINEL_MASTER: "redis1 6379 2"
       SENTINEL_AUTHPASS: ${redis_password}
     command: redis-sentinel
