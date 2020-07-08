@@ -92,10 +92,9 @@ function start(){
         redMsg "服务数量参数 ${number_name} 未设置"
         exit 127
     fi
-    #镜像不存在则构建
-    if [  -z "$(docker images ${docker_image}  -q )" ]; then
-        [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
-    fi
+    #如果是自定义镜像则每次都需要构建
+    [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
+
     stack_name="${service_name}${SERVICE_SUFFIX}"
     yellowMsg  "开始部署${stack_name}服务..."
     docker stack deploy -c ${BASE_DIR}/${service_name}/${STACK_CONFIG} ${stack_name}

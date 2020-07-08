@@ -64,7 +64,6 @@ export mongodb_cluster_init_sleep=5
 export nifi_image="gridsum/nifi-cluster:1.11.4"
 export nifi_nums=5
 export nifi_container_memory=4096m
-export nifi_ldap_domain="gridsum.com"
 ## nifi的初始管理员为admin 密码为 nifi_ldap_admin_password
 export nifi_ldap_admin_password="123456"
 

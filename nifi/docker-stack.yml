@@ -20,7 +20,7 @@ services:
         limits:
           memory: ${default_container_memory}
     environment:
-      LDAP_DOMAIN: ${nifi_ldap_domain}
+      LDAP_DOMAIN: gridsum.com
       LDAP_ADMIN_PASSWORD: ${nifi_ldap_admin_password}
     volumes:
     - openldap-data-volume:/var/lib/ldap
@@ -79,9 +79,9 @@ services:
       NODE_HOST: nifi1
       NIFI_CLUSTER_NODE_ADDRESS: nifi1
       HTTPS_PORT: 8443
-      LDAP_MANAGER_DN: "cn=admin,${nifi_ldap_domain}"
+      LDAP_MANAGER_DN: "cn=admin,dc=gridsum,dc=com"
       LDAP_MANAGER_PASSWORD: ${nifi_ldap_admin_password}
-      LDAP_USER_SEARCH_BASE: ${nifi_ldap_domain}
+      LDAP_USER_SEARCH_BASE: "dc=gridsum,dc=com"
     networks:
       ddc_network:
   nifi2:
@@ -113,9 +113,9 @@ services:
       NODE_HOST: nifi2
       NIFI_CLUSTER_NODE_ADDRESS: nifi2
       HTTPS_PORT: 8443
-      LDAP_MANAGER_DN: "cn=admin,${nifi_ldap_domain}"
+      LDAP_MANAGER_DN: "cn=admin,dc=gridsum,dc=com"
       LDAP_MANAGER_PASSWORD: ${nifi_ldap_admin_password}
-      LDAP_USER_SEARCH_BASE: ${nifi_ldap_domain}
+      LDAP_USER_SEARCH_BASE: "dc=gridsum,dc=com"
     networks:
       ddc_network:
   nifi3:
@@ -147,9 +147,9 @@ services:
       NODE_HOST: nifi3
       NIFI_CLUSTER_NODE_ADDRESS: nifi3
       HTTPS_PORT: 8443
-      LDAP_MANAGER_DN: "cn=admin,${nifi_ldap_domain}"
+      LDAP_MANAGER_DN: "cn=admin,dc=gridsum,dc=com"
       LDAP_MANAGER_PASSWORD: ${nifi_ldap_admin_password}
-      LDAP_USER_SEARCH_BASE: ${nifi_ldap_domain}
+      LDAP_USER_SEARCH_BASE: "dc=gridsum,dc=com"
     networks:
       ddc_network:
 

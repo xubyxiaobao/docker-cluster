@@ -2,25 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="803924c8-e0cd-4ccb-a3b6-09d2bca8ef8e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/docker-registry/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-registry/env.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-registry/load-images.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-registry/export-images.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-registry/start.sh" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/init-registry.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kafka/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/kafka/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongodb/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nifi/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/build-image.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nifi/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/redis/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/base-server.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save-images.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-registry/save-images.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scp2Linux.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scp2Linux.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zookeeper/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/zookeeper/docker-stack.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,8 +15,9 @@
     <toolWindowEditorPreview>false</toolWindowEditorPreview>
   </component>
   <component name="Git.Settings">
-    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="MERGE" />
+    <option name="WARN_ABOUT_CRLF" value="false" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -149,13 +134,15 @@
   <component name="VcsManagerConfiguration">
     <option name="SHOW_PATCH_IN_EXPLORER" value="true" />
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="success" />
+    <option name="LAST_COMMIT_MESSAGE" value="success" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="611" y="117" key="CommitChangelistDialog2" timestamp="1593774624122">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2355" y="0" key="CommitChangelistDialog2" timestamp="1594200995367">
+      <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state x="611" y="117" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1593774624122" />
+    <state x="2355" y="0" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594200995366" />
     <state x="1920" y="0" key="DiffContextDialog" timestamp="1593771068144">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
@@ -164,26 +151,26 @@
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state x="2383" y="122" key="FileChooserDialogImpl/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594019512621" />
-    <state width="1323" height="215" key="GridCell.Tab.0.bottom" timestamp="1594199983915">
+    <state width="1323" height="211" key="GridCell.Tab.0.bottom" timestamp="1594201829196">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594191695935" />
-    <state width="1323" height="215" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594199983915" />
-    <state width="1323" height="215" key="GridCell.Tab.0.center" timestamp="1594199983915">
+    <state width="1323" height="211" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594201829195" />
+    <state width="1323" height="211" key="GridCell.Tab.0.center" timestamp="1594201829191">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594191695934" />
-    <state width="1323" height="215" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594199983915" />
-    <state width="1323" height="215" key="GridCell.Tab.0.left" timestamp="1594199983914">
+    <state width="1323" height="211" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594201829191" />
+    <state width="1323" height="211" key="GridCell.Tab.0.left" timestamp="1594201829151">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594191695932" />
-    <state width="1323" height="215" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594199983914" />
-    <state width="1323" height="215" key="GridCell.Tab.0.right" timestamp="1594199983915">
+    <state width="1323" height="211" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594201829151" />
+    <state width="1323" height="211" key="GridCell.Tab.0.right" timestamp="1594201829193">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594191695934" />
-    <state width="1323" height="215" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594199983915" />
+    <state width="1323" height="211" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594201829193" />
     <state x="2372" y="77" key="RollbackChangesDialog" timestamp="1593771070646">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
@@ -193,6 +180,10 @@
     </state>
     <state x="261" y="13" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1593772548377" />
     <state x="2106" y="9" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1593740662541" />
+    <state x="2195" y="100" key="Vcs.Push.Dialog.v2" timestamp="1594201020985">
+      <screen x="1920" y="0" width="1366" height="728" />
+    </state>
+    <state x="2195" y="100" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594201020985" />
     <state x="2266" y="49" width="672" height="678" key="search.everywhere.popup" timestamp="1594199466546">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
