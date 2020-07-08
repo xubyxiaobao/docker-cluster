@@ -4,6 +4,20 @@ services:
     image: ${REGISTRY_HOST}${kafka_image}
     ports:
       - 9092
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager1"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
     # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://192.168.33.22:9094
@@ -15,21 +29,25 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 5
-        window: 120s
-      resources:
-        limits:
-          memory: 2048M
+
   kafka2:
     image: ${REGISTRY_HOST}${kafka_image}
     ports:
       - 9092
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager2"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
       # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://192.168.33.22:9094
@@ -41,21 +59,24 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 5
-        window: 120s
-      resources:
-        limits:
-          memory: 2048M
   kafka3:
     image: ${REGISTRY_HOST}${kafka_image}
     ports:
       - 9092
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager3"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
       # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://192.168.33.22:9094
@@ -67,17 +88,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
-    deploy:
-      mode: replicated
-      replicas: 1
-      restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 5
-        window: 120s
-      resources:
-        limits:
-          memory: 2048M
 volumes:
   kafka1-data-volume:
   kafka2-data-volume:

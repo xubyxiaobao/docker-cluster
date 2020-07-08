@@ -5,6 +5,20 @@ services:
     ports:
       - "389:389"
       - "636:636"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.role==manager"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${default_container_memory}
     environment:
       LDAP_DOMAIN: ${nifi_ldap_domain}
       LDAP_ADMIN_PASSWORD: ${nifi_ldap_admin_password}
@@ -17,6 +31,20 @@ services:
     image: ${REGISTRY_HOST}osixia/phpldapadmin
     ports:
       - "28080:80"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.role==manager"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${default_container_memory}
     environment:
       PHPLDAPADMIN_HTTPS: "false"
       PHPLDAPADMIN_LDAP_HOSTS: "openldap"
@@ -24,6 +52,20 @@ services:
       ddc_network:
   nifi1:
     image: ${REGISTRY_HOST}${nifi_image}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager1"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${nifi_container_memory}
     hostname: nifi1
     volumes:
       - nifi1_logs_volume:/opt/nifi/nifi-current/logs
@@ -44,6 +86,20 @@ services:
       ddc_network:
   nifi2:
     image: ${REGISTRY_HOST}${nifi_image}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager2"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${nifi_container_memory}
     hostname: nifi2
     volumes:
       - nifi2_logs_volume:/opt/nifi/nifi-current/logs
@@ -64,6 +120,20 @@ services:
       ddc_network:
   nifi3:
     image: ${REGISTRY_HOST}${nifi_image}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager3"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${nifi_container_memory}
     hostname: nifi3
     volumes:
       - nifi3_logs_volume:/opt/nifi/nifi-current/logs

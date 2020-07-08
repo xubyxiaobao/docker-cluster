@@ -2,14 +2,28 @@ version: '3.8'
 services:
   mongodb1:
     image: ${REGISTRY_HOST}${mongodb_image}
-    volumes:
-      - mongodb1-data-volume:/data/db
-      - mongodb1-config-volume:/data/configdb
     ports:
       - 27017:27017
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager1"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${mongodb_container_memory}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
+    volumes:
+      - mongodb1-data-volume:/data/db
+      - mongodb1-config-volume:/data/configdb
     networks: 
       - ddc_network
     entrypoint:
@@ -21,16 +35,30 @@ services:
       - /data/mongodb.key
   mongodb2:
     image: ${REGISTRY_HOST}${mongodb_image}
-    volumes:
-      - mongodb2-data-volume:/data/db
-      - mongodb2-config-volume:/data/configdb
     ports:
       - 27018:27017
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager2"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${mongodb_container_memory}
     depends_on:
       - mongodb1
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
+    volumes:
+      - mongodb2-data-volume:/data/db
+      - mongodb2-config-volume:/data/configdb
     networks:
       - ddc_network
     entrypoint:
@@ -42,16 +70,30 @@ services:
       - /data/mongodb.key
   mongodb3:
     image: ${REGISTRY_HOST}${mongodb_image}
-    volumes:
-      - mongodb3-data-volume:/data/db
-      - mongodb3-config-volume:/data/configdb
     ports:
       - 27019:27017
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager3"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${mongodb_container_memory}
     depends_on:
       - mongodb1
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
+    volumes:
+      - mongodb3-data-volume:/data/db
+      - mongodb3-config-volume:/data/configdb
     networks:
       - ddc_network
     entrypoint:

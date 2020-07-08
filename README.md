@@ -123,21 +123,20 @@ For more examples and ideas, visit:
 ```
 
 ### 安装docker-registry 私服
-选取一台服务器作为私服，此次选取ddc3(192.168.35.103)为私服
+选取一台服务器作为registry容器运行的宿主机，并修改**每台**docker服务器的配置 /etc/docker/daemon.json
+例如：服务器ddc3(192.168.35.103)作为私服，端口5000为registry容器暴露服务的端口
+```json 
+vi /etc/docker/daemon.json
+
+{
+  "insecure-registries": ["192.168.35.103:5000"]  
+}
+```
 在该服务器上运行下面的命令启动私服
 ```bash
 docker run -d --name registry -p 5000:5000 \
 -v /usr/local/docker/registry-image/:/tmp/registry \
 --restart=always registry
-```
-修改其余服务器(ddc1、ddc2)的docker配置文件，使之可以拉取私服镜像
-```bash
-vi /etc/docker/daemon.json
-#修改为如下所示
-{
-  "registry-mirrors": ["http://hub-mirror.c.163.com"],
-  "insecure-registries": ["192.168.35.103:5000"]
-}
 ```
 
 给镜像打标签
@@ -155,8 +154,10 @@ http://192.168.35.103:5000/v2/_catalog
 ```
 查看某个镜像具体版本
 ```bash
-http://192.168.35.103:5000/v2/redis/tags/list
+http://192.168.35.103:5000/v2/image/tags/list
 ```
+[本地私服搭建步骤](./docker-registry/README.md)
+
 
 ### docker-swarm 初始化
 #### 1、在ddc1服务器上执行如下命令
@@ -233,10 +234,13 @@ mkdir /opt/docker-clsuter
 ```bash
 chmod -R a+x /opt/docker-cluster/
 ```
+### 根据需求修改env.sh
+对env.sh进行一些必要参数的修改
+
 ### 启动集群
 ```bash
 cd /opt/docker-cluster
-./run.sh start [serverName]
+./base-server.sh start [serverName]
 ```
 > 启动集群命令说明：
 >第一个参数：start/stop 部署集群/停止集群

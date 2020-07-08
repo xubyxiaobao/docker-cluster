@@ -4,6 +4,20 @@ services:
     image: ${REGISTRY_HOST}${redis_image}
     ports:
       - 6379:6379
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager1"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${redis_container_memory}
     environment:
       PASSWORD: ${redis_password}
     volumes:
@@ -14,6 +28,20 @@ services:
     image: ${REGISTRY_HOST}${redis_image}
     ports:
       - 6380:6379
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager2"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${redis_container_memory}
     depends_on:
       - redis1
     environment:
@@ -27,6 +55,20 @@ services:
     image: ${REGISTRY_HOST}${redis_image}
     ports:
       - 6381:6379
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager3"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${redis_container_memory}
     depends_on:
       - redis1
     environment:
@@ -38,6 +80,20 @@ services:
       ddc_network:
   sentinel1:
     image: ${REGISTRY_HOST}${redis_image}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager1"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${redis_sentinel_container_memory}
     environment:
       PORT: 26379
       SENTINEL_MASTER: "redis1 6379 2"
@@ -53,6 +109,20 @@ services:
       ddc_network:
   sentinel2:
     image: ${REGISTRY_HOST}${redis_image}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager2"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${redis_sentinel_container_memory}
     environment:
       PORT: 26379
       SENTINEL_MASTER: "redis1 6379 2"
@@ -68,6 +138,20 @@ services:
       ddc_network:
   sentinel3:
     image: ${REGISTRY_HOST}${redis_image}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager3"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${redis_sentinel_container_memory}
     environment:
       PORT: 26379
       SENTINEL_MASTER: "redis1 6379 2"

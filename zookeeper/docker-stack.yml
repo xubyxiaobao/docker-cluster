@@ -7,15 +7,18 @@ services:
       - 2181:2181
     deploy:
       mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager1"
       replicas: 1
       restart_policy:
         condition: any
         delay: 5s
-        max_attempts: 5
+        max_attempts: 10
         window: 120s
       resources:
         limits:
-          memory: 2048M
+          memory: ${zookeeper_container_memory}
     environment:
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
@@ -32,15 +35,18 @@ services:
       - 2182:2181
     deploy:
       mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager2"
       replicas: 1
       restart_policy:
         condition: any
         delay: 5s
-        max_attempts: 5
+        max_attempts: 10
         window: 120s
       resources:
         limits:
-          memory: 2048M
+          memory: ${zookeeper_container_memory}
     environment:
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
@@ -57,15 +63,18 @@ services:
       - 2183:2181
     deploy:
       mode: replicated
+      placement:
+        constraints:
+          - "node.labels.nodename==manager3"
       replicas: 1
       restart_policy:
         condition: any
         delay: 5s
-        max_attempts: 5
+        max_attempts: 10
         window: 120s
       resources:
         limits:
-          memory: 2048M
+          memory: ${zookeeper_container_memory}
     environment:
       ZOO_MY_ID: 3
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
