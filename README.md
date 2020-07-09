@@ -264,9 +264,10 @@ chmod -R a+x /opt/docker-cluster/
 
 
 ## 启动基础服务集群
+命令格式：
 ```bash
 cd /opt/docker-cluster
-./base-server.sh start [serverName]
+./base-server.sh start/stop [serverName/all]
 ```
 > 启动集群命令说明：
 >第一个参数：start/stop 部署集群/停止集群
@@ -329,7 +330,29 @@ nginx为外部访问nifi必备组件，必须在构建nifi之后才能构建ngin
 
 
 ## 启动微服务
+命令格式：
 ```bash
 cd /opt/docker-cluster
-./micro-server.sh start [serverName]
+./micro-server.sh start/stop [serverName/all]
 ```
+### 步骤：
+1、将需要运行的jar包放到`micro-server`文件夹下
+2、运行命令，如 './micro-server.sh start spring-web' 启动spring-web.jar服务 
+3、运行命令，如 './micro-server.sh stop spring-web'  停止spring-web.jar服务
+>Note：<br/>
+>1、启动微服务的名称与jar包的文件名去除`.jar`后一致(如启动spring-web.jar 命令为 ./micro-server.sh start spring-web.jar)<br/>
+>2、jar包必须放到`micro-server`文件夹下<br/>
+>3、使用命令 `docker service logs -f spinrg-web_server` 可以查看服务spring-web的日志<br/>
+>4、环境变量MICRO_SERVER_COMMANDS(env.sh中)会追加到对应的命令行中，例如设置
+>`MICRO_SERVER_COMMANDS='spring-web1="--server.port=8080" spring-web2="--server.port=9090"'`，
+>启动 spring-web1、spring-web2服务时，最终执行的java命令为: <br/>
+>`java -jar spring-web1 --server.port=8080` <br/>
+>`java -jar spring-web2 --server.port=9090` <br/>
+>5、设置env.sh中的变量`MICRO_SERVER_COMMANDS`请特别注意格式：<br/>
+>`MICRO_SERVER_COMMANDS='serverName1="xxx"  serverName2="xxx" serverName3="xxx"'`<br/>
+>注意单引号与双引号！！！ <br/>
+>6、可以添加micro-server/docker-stack.yml中的environment变量来修改jvm的启动参数，格式为JVM_ARG_([0-9])+。
+>在运行java命令时，会遍历环境变量，从中获取 JVM_ARG_([0-9])+ 格式的参数，并拼接到java启动命令中。
+>例如有参数： JVM_ARG_1="-Xmx512m"、JVM_ARG_2="-Xms512m"、JVM_ARG_3="-XX:+UseConcMarkSweepGC"，
+>容器启动时会运行命令 `java -Xmx512m -Xms512m -jar xx.jar`
+

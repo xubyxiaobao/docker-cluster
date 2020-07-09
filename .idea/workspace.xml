@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="803924c8-e0cd-4ccb-a3b6-09d2bca8ef8e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/micro-server/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/docker-entrypoint.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/docker-stack.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/start.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/stop.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base-server.sh" beforeDir="false" afterPath="$PROJECT_DIR$/base-server.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common.sh" beforeDir="false" afterPath="$PROJECT_DIR$/common.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-registry/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/docker-registry/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/micro-server.sh" beforeDir="false" afterPath="$PROJECT_DIR$/micro-server.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,14 +135,15 @@
     <MESSAGE value="init" />
     <MESSAGE value="success" />
     <MESSAGE value="base-service over" />
-    <option name="LAST_COMMIT_MESSAGE" value="base-service over" />
+    <MESSAGE value="micro-service over" />
+    <option name="LAST_COMMIT_MESSAGE" value="micro-service over" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="611" y="117" key="CommitChangelistDialog2" timestamp="1594203021460">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2355" y="0" key="CommitChangelistDialog2" timestamp="1594288985579">
+      <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state x="611" y="117" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594203021460" />
-    <state x="2355" y="0" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594200995366" />
+    <state x="2355" y="0" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594288985579" />
     <state x="1920" y="0" key="DiffContextDialog" timestamp="1593771068144">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
@@ -190,10 +181,10 @@
     </state>
     <state x="261" y="13" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1593772548377" />
     <state x="2106" y="9" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1593740662541" />
-    <state x="387" y="143" key="Vcs.Push.Dialog.v2" timestamp="1594203035302">
+    <state x="387" y="143" key="Vcs.Push.Dialog.v2" timestamp="1594288996933">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="387" y="143" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594203035302" />
+    <state x="387" y="143" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594288996933" />
     <state x="2195" y="100" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594201020985" />
     <state x="2012" y="92" width="1182" height="544" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1594263072523">
       <screen x="1920" y="0" width="1366" height="728" />
