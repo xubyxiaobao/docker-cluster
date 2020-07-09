@@ -1,7 +1,7 @@
 #!/bin/bash
 #环境变量设置
 
-
+export ENV_SHELL_LOAD=true
 #==================================
 #全局变量
 export REGISTRY_HOST=192.168.35.103:5000/
@@ -77,3 +77,11 @@ export nginx_nums=1
 #mysql
 export mysql_image="mysql:5.7"
 export mysql_nums=1
+
+
+#===========================================================================
+#所有的微服务，包含在这里面的微服务才会启动
+
+export MICRO_SERVER_COMMANDS='spring-web1="--server.port=9081"
+spring-web2="--server.port=9082" spring-web3="--server.port=9083"
+spring-web4="--server.port=9084" spring-web5="--server.port=9085"'

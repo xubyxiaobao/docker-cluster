@@ -33,8 +33,7 @@ networkCheck
 ## 服务部署
 #
 if [ "all" == "$service" ]; then
-    echo  "开始加载所有服务执行脚本"
-
+    echo  "开始执行所有服务脚本"
     arr=($(echo "$ALL_SERVICES"| awk '{print substr($0,2,length($0)-2)}'|sed 's/|/ /g'))
     echo "数组arr=${arr[@]}"
     for var in ${arr[@]}; do
@@ -42,7 +41,7 @@ if [ "all" == "$service" ]; then
         $command $var
     done
 else
-    echo -e "开始加载单个服务执行脚本"
+    echo -e "开始执行单个服务脚本"
     $command $service
 fi
 

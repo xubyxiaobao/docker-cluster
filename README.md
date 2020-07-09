@@ -23,6 +23,31 @@ firewall-cmd --zone=public --add-port=4789/udp --permanent
 firewall-cmd --reload
 ```
 
+### jdk(只需要在运行脚本的服务器上安装)
+- [下载地址](ftp://big.gxkjbg.com:8021/201704/tools/jdk-linux-x64.tar.gz)
+- 将压缩包放在目录 /opt 下
+- 解压 `tar -zxvf jdk-linux-x64.tar.gz`
+- 设置环境变量
+```bash
+# 在/etc/profile最后一行添加
+export JAVA_HOME=/opt/jdk1.8.0_131
+export CLASSPATH=$JAVA_HOME/lib/
+export PATH=$PATH:$JAVA_HOME/bin
+export PATH JAVA_HOME CLASSPATH
+```
+- 使环境变量立即生效 `source /etc/profile`
+
+### maven(只需要在运行脚本的服务器上安装)
+- 将压缩包放在目录 /opt 下
+- 解压 `tar -zxvf jdk-linux-x64.tar.gz`
+- 设置环境变量
+```bash
+# 在/etc/profile 最后一行添加
+export MAVEN_HOME=/opt/apache-maven-3.6.3
+export PATH=$MAVEN_HOME/bin:$PATH
+```
+- 使环境变量立即生效 `source /etc/profile`
+
 ### openssl
 ```bash
 yum -y install openssl
@@ -156,7 +181,7 @@ http://192.168.35.103:5000/v2/_catalog
 ```bash
 http://192.168.35.103:5000/v2/image/tags/list
 ```
-[本地私服搭建步骤](./docker-registry/README.md)
+[本地私服搭建执行脚本](./docker-registry/README.md)
 
 
 ### docker-swarm 初始化
@@ -237,7 +262,8 @@ chmod -R a+x /opt/docker-cluster/
 ### 根据需求修改env.sh
 对env.sh进行一些必要参数的修改
 
-### 启动集群
+
+## 启动基础服务集群
 ```bash
 cd /opt/docker-cluster
 ./base-server.sh start [serverName]
@@ -299,3 +325,11 @@ zookeeper配置修改详细地址：https://github.com/docker-library/docs/tree/
 
 ####nginx
 nginx为外部访问nifi必备组件，必须在构建nifi之后才能构建nginx镜像
+
+
+
+## 启动微服务
+```bash
+cd /opt/docker-cluster
+./micro-server.sh start [serverName]
+```

@@ -93,7 +93,10 @@ function start(){
         exit 127
     fi
     #如果是自定义镜像则每次都需要构建
-    [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
+
+    if [  -z "$(docker images ${REGISTRY_HOST}${docker_image}  -q )" ]; then
+        [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
+    fi
 
     stack_name="${service_name}${SERVICE_SUFFIX}"
     yellowMsg  "开始部署${stack_name}服务..."
