@@ -1,3 +1,4 @@
+ARG REGISTRY=${REGISTRY}
 FROM ${REGISTRY}mongo:4.2.8-bionic
 
 #复制mongokey

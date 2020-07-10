@@ -8,7 +8,7 @@ dir=$(cd $(dirname $0);pwd);
 openssl rand -base64 512 > $dir/mongodb.key
 
 # 开始构建 mongodb镜像
-docker build -t ${REGISTRY}${mongodb_image} ${dir}/
+docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${mongodb_image} ${dir}/
 
 #推送镜像至私服
 docker push ${REGISTRY}${mongodb_image}

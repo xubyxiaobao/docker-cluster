@@ -64,7 +64,7 @@ done
 IFS="$OLD_IFS"
 
 echo "构建镜像配置检查完成"
-docker build -t ${REGISTRY}${nifi_image}  ${dir}/
+docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${nifi_image}  ${dir}/
 
 docker push ${REGISTRY}${nifi_image}
 

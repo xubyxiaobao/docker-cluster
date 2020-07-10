@@ -24,8 +24,10 @@ services:
     volumes:
       - mongodb1-data-volume:/data/db
       - mongodb1-config-volume:/data/configdb
-    networks: 
-      - ddc_network
+    networks:
+      ddc_network:
+        aliases:
+          - mongodb1
     entrypoint:
       - docker-entrypoint.sh
       - mongod
@@ -60,7 +62,9 @@ services:
       - mongodb2-data-volume:/data/db
       - mongodb2-config-volume:/data/configdb
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+          - mongodb2
     entrypoint:
       - docker-entrypoint.sh
       - mongod
@@ -95,7 +99,9 @@ services:
       - mongodb3-data-volume:/data/db
       - mongodb3-config-volume:/data/configdb
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+          - mongodb3
     entrypoint:
       - docker-entrypoint.sh
       - mongod

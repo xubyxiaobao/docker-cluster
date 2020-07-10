@@ -25,7 +25,9 @@ services:
       JVM_ARG_7: "-XX:CMSMaxAbortablePrecleanTime=5000"
     command: ${MICRO_COMMAND}
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+          - ${MICRO_SERVER}
 
 
 networks:

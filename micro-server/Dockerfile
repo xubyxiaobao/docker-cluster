@@ -1,3 +1,4 @@
+ARG REGISTRY
 FROM ${REGISTRY}openjdk:8u252-jdk-buster
 
 ARG package

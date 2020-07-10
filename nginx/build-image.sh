@@ -3,7 +3,7 @@
 dir=$(cd $(dirname $0);pwd);
 
 echo "开始构建nginx镜像"
-docker build -t ${REGISTRY}${nginx_image}  ${dir}/
+docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${nginx_image}  ${dir}/
 
 docker push ${REGISTRY}${nginx_image}
 if [ $? -ne 0 ]; then

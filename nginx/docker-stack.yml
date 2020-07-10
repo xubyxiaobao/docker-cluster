@@ -5,7 +5,9 @@ services:
     ports:
       - "8443:8443"
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+          - nginx
 networks:
   ddc_network:
     external: true

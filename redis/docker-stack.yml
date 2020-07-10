@@ -24,6 +24,8 @@ services:
       - redis1-volume:/data
     networks:
       ddc_network:
+        aliases:
+          - redis1
   redis2:
     image: ${REGISTRY}${redis_image}
     ports:
@@ -51,6 +53,8 @@ services:
       - redis2-volume:/data
     networks:
       ddc_network:
+        aliases:
+          - redis2
   redis3:
     image: ${REGISTRY}${redis_image}
     ports:
@@ -78,6 +82,8 @@ services:
       - redis3-volume:/data
     networks:
       ddc_network:
+        aliases:
+          - redis3
   sentinel1:
     image: ${REGISTRY}${redis_image}
     deploy:
@@ -107,6 +113,8 @@ services:
       - sentinel1-volume:/data
     networks:
       ddc_network:
+        aliases:
+          - sentinel1
   sentinel2:
     image: ${REGISTRY}${redis_image}
     deploy:
@@ -136,6 +144,8 @@ services:
       - sentinel2-volume:/data
     networks:
       ddc_network:
+        aliases:
+          - sentinel2
   sentinel3:
     image: ${REGISTRY}${redis_image}
     deploy:
@@ -165,6 +175,8 @@ services:
       - sentinel3-volume:/data
     networks:
       ddc_network:
+        aliases:
+          - sentinel3
 
 
 volumes:

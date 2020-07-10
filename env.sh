@@ -8,6 +8,8 @@ export ENV_SHELL_LOAD=true
 export REGISTRY_HOST=192.168.35.103
 export REGISTRY_PORT=5000
 
+export REGISTRY="${REGISTRY_HOST}:${REGISTRY_PORT}/"
+
 #项目运行docker子网
 export NETWORK=ddc_network
 export SUBNET=172.32.0.0/16
@@ -79,7 +81,7 @@ export nginx_nums=1
 #mysql
 export mysql_image="mysql:5.7"
 export mysql_nums=1
-
+export mysql_root_passwd=root
 
 #===========================================================================
 #所有的微服务，包含在这里面的微服务才会启动

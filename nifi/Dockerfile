@@ -1,3 +1,4 @@
+ARG REGISTRY=${REGISTRY}
 FROM ${REGISTRY}apache/nifi:1.11.4
 
 #nifi.properties  集群+认证

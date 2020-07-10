@@ -2,7 +2,7 @@
 
 
 function mongoClusterInit(){
-    result=$(docker run --rm -it --network=$NETWORK --entrypoint mongo mongo:4.2.8-bionic \
+    result=$(docker run --rm -it --network=$NETWORK --entrypoint mongo ${REGISTRY}${mongodb_image} \
     --host mongodb${SERVICE_SUFFIX}_mongodb1 --username ${mongodb_admin} \
     --password ${mongodb_password} \
     --eval 'config={"_id":"rs","members":[{"_id":0,"host":"mongodb1:27017"},
@@ -20,7 +20,7 @@ function mongoClusterInit(){
 }
 for (( index=1 ; index <= ${mongodb_nums} ; index++ ));
 do
-        result=$(docker run --rm -it --network=$NETWORK --entrypoint mongo mongo:4.2.8-bionic \
+        result=$(docker run --rm -it --network=$NETWORK --entrypoint mongo ${REGISTRY}${mongodb_image} \
         --host mongodb${SERVICE_SUFFIX}_mongodb${index} --username ${mongodb_admin} \
         --password ${mongodb_password} \
         --eval 'rs.status();')
@@ -52,6 +52,8 @@ do
         fi
 done
 
+
+#use admin;db.createUser({user:"admin",pwd:"password",roles: [{ role: "root", db: "admin" }]})
 
 echo -e "\033[31mmongodb初始化失败\033[0m"
 exit 127

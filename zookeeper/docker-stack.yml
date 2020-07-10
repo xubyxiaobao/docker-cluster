@@ -27,7 +27,9 @@ services:
       - zoo1-datalog-volume:/datalog
       - zoo1-log-volume:/logs
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+            - zoo1
   zoo2:
     image: ${REGISTRY}${zookeeper_image}
     hostname: zoo2
@@ -55,7 +57,9 @@ services:
       - zoo2-datalog-volume:/datalog
       - zoo2-log-volume:/logs
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+          - zoo2
   zoo3:
     image: ${REGISTRY}${zookeeper_image}
     hostname: zoo3
@@ -83,7 +87,9 @@ services:
       - zoo3-datalog-volume:/datalog
       - zoo3-log-volume:/logs
     networks:
-      - ddc_network
+      ddc_network:
+        aliases:
+          - zoo3
 
 volumes:
   zoo1-data-volume:

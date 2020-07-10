@@ -27,6 +27,8 @@ services:
     - openldap-config-volume:/etc/ldap/slapd.d
     networks:
       ddc_network:
+        aliases:
+          - openldap
   ldapadmin:
     image: ${REGISTRY}osixia/phpldapadmin
     ports:
@@ -50,6 +52,8 @@ services:
       PHPLDAPADMIN_LDAP_HOSTS: "openldap"
     networks:
       ddc_network:
+        aliases:
+          - ldapadmin
   nifi1:
     image: ${REGISTRY}${nifi_image}
     deploy:
@@ -84,6 +88,8 @@ services:
       LDAP_USER_SEARCH_BASE: "dc=gridsum,dc=com"
     networks:
       ddc_network:
+        aliases:
+          - nifi1
   nifi2:
     image: ${REGISTRY}${nifi_image}
     deploy:
@@ -118,6 +124,8 @@ services:
       LDAP_USER_SEARCH_BASE: "dc=gridsum,dc=com"
     networks:
       ddc_network:
+        aliases:
+          - nifi2
   nifi3:
     image: ${REGISTRY}${nifi_image}
     deploy:
@@ -152,6 +160,8 @@ services:
       LDAP_USER_SEARCH_BASE: "dc=gridsum,dc=com"
     networks:
       ddc_network:
+        aliases:
+          - nifi3
 
 
 volumes:

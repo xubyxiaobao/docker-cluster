@@ -29,7 +29,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
-
+        aliases:
+          - kafka1
   kafka2:
     image: ${REGISTRY}${kafka_image}
     ports:
@@ -59,6 +60,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
+        aliases:
+          - kafka2
   kafka3:
     image: ${REGISTRY}${kafka_image}
     ports:
@@ -88,6 +91,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       ddc_network:
+        aliases:
+          - kafka3
 volumes:
   kafka1-data-volume:
   kafka2-data-volume:
