@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   zoo1:
-    image: ${REGISTRY_HOST}${zookeeper_image}
+    image: ${REGISTRY}${zookeeper_image}
     hostname: zoo1
     ports:
       - 2181:2181
@@ -29,7 +29,7 @@ services:
     networks:
       - ddc_network
   zoo2:
-    image: ${REGISTRY_HOST}${zookeeper_image}
+    image: ${REGISTRY}${zookeeper_image}
     hostname: zoo2
     ports:
       - 2182:2181
@@ -57,7 +57,7 @@ services:
     networks:
       - ddc_network
   zoo3:
-    image: ${REGISTRY_HOST}${zookeeper_image}
+    image: ${REGISTRY}${zookeeper_image}
     hostname: zoo3
     ports:
       - 2183:2181

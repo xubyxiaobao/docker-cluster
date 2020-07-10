@@ -4,7 +4,9 @@
 export ENV_SHELL_LOAD=true
 #==================================
 #全局变量
-export REGISTRY_HOST=192.168.35.103:5000/
+
+export REGISTRY_HOST=192.168.35.103
+export REGISTRY_PORT=5000
 
 #项目运行docker子网
 export NETWORK=ddc_network

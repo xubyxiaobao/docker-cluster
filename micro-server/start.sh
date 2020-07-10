@@ -18,14 +18,14 @@ fi
 export MICRO_SERVER=$1
 export MICRO_VERSION=$(date +%Y%m%d%H%M%S)
 
-docker build --build-arg package=$(basename $jar_file)  -t "${REGISTRY_HOST}${MICRO_SERVER}:${MICRO_VERSION}"  ${base_dir}/
+docker build --build-arg package=$(basename $jar_file)  -t "${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}"  ${base_dir}/
 
 if [ $? -ne 0 ]; then
     echo "构建失败"
     exit 127
 fi
 
-docker push "${REGISTRY_HOST}${MICRO_SERVER}:${MICRO_VERSION}"
+docker push "${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}"
 
 #获取对应command
 arr=($MICRO_SERVER_COMMANDS)

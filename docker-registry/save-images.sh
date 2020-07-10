@@ -11,24 +11,30 @@ download_path=${base_dir}/$IMAGES_TAR_NAME
 
 image_arr=($SAVE_IMAGES)
 #从远程仓库下载
-echo  "开始进行镜像文件生成。。。"
 for image in ${image_arr[@]}
 do
     if [ -z $(docker images $image -q) ]; then
-#        docker pull $image
-         echo "开始从远程仓库拉取镜像 $image"
+        echo -e "\033[33m开始从远程仓库拉取镜像 $image\033[0m"
+        docker pull $image
+        if [ $? -ne 0 ]; then
+            echo -e "\031[33m镜像${image}拉取失败\033[0m"
+            exit127
+        fi
+        echo -e "\033[32m镜像${image}已拉取完成\033[0m"
     fi
 
     file_name=$(echo $image|awk -F'/' '{print $NF}')
+    echo -e "\033[33m开始生成${image}的镜像文件\033[0m"
     docker save -o "${download_path}/${file_name}.tar" $image
-    echo "镜像${image}本地保存已完成"
+    if [ $? -ne 0 ]; then
+        echo -e "\031[31m镜像${image}保存文件失败\033[0m"
+        exit127
+    fi
+    echo -e "\033[32m镜像${image}的文件已生成\033[0m"
 done
 
-#将镜像文件夹打包
-echo "开始将已下载的镜像打包，打包文件名："
 tar_name=$(basename $download_path)
-
-
+#将镜像文件夹打包
+echo -e "\033[33m开始将已下载的镜像打包，打包文件名：${tar_name}.tar.gz\033[0m"
 tar -czvf "${tar_name}.tar.gz" $download_path
-
-#
+echo -e "\033[32m打包完成，打包文件名：${tar_name}.tar.gz\033[0m"

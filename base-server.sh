@@ -30,6 +30,7 @@ isInclude $ALL_SERVICES"all|" $service "服务"
 networkCheck
 
 
+export REGISTRY="${REGISTRY_HOST}:${REGISTRY_PORT}/"
 ## 服务部署
 #
 if [ "all" == "$service" ]; then

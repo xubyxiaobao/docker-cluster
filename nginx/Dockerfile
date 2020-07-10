@@ -1,4 +1,4 @@
-FROM ${REGISTRY_HOST}nginx:1.19.0
+FROM ${REGISTRY}nginx:1.19.0
 
 
 # 复制配置文件到容器中

@@ -5,6 +5,12 @@ registry是在局域网内部搭建私有的镜像注册中心，从而使无法
 ###Note：
 必须修改每台docker服务器上的`/etc/docker/daemon.json`文件夹，使每台服务器可以通过http方式访问到私有注册中心
 
+### 软件安装
+```bash
+yum -y install epel-release
+yum -y install jq
+```
+
 ### 脚本说明
 - `env.sh`：设置`save-images.sh`和`load-images.sh`脚本运行过程中的相关变量
  - `SAVE_IMAGES`：需要保存/恢复的基础服务列表

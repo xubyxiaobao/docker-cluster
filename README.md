@@ -160,7 +160,7 @@ vi /etc/docker/daemon.json
 在该服务器上运行下面的命令启动私服
 ```bash
 docker run -d --name registry -p 5000:5000 \
--v /usr/local/docker/registry-image/:/tmp/registry \
+-v /opt/registry-repository/:/tmp/registry \
 --restart=always registry
 ```
 

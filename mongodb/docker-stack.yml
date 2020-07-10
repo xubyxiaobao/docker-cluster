@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   mongodb1:
-    image: ${REGISTRY_HOST}${mongodb_image}
+    image: ${REGISTRY}${mongodb_image}
     ports:
       - 27017:27017
     deploy:
@@ -34,7 +34,7 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb2:
-    image: ${REGISTRY_HOST}${mongodb_image}
+    image: ${REGISTRY}${mongodb_image}
     ports:
       - 27018:27017
     deploy:
@@ -69,7 +69,7 @@ services:
       - --keyFile
       - /data/mongodb.key
   mongodb3:
-    image: ${REGISTRY_HOST}${mongodb_image}
+    image: ${REGISTRY}${mongodb_image}
     ports:
       - 27019:27017
     deploy:

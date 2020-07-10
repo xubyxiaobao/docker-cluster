@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   openldap:
-    image: ${REGISTRY_HOST}osixia/openldap:1.4.0
+    image: ${REGISTRY}osixia/openldap:1.4.0
     ports:
       - "389:389"
       - "636:636"
@@ -28,7 +28,7 @@ services:
     networks:
       ddc_network:
   ldapadmin:
-    image: ${REGISTRY_HOST}osixia/phpldapadmin
+    image: ${REGISTRY}osixia/phpldapadmin
     ports:
       - "28080:80"
     deploy:
@@ -51,7 +51,7 @@ services:
     networks:
       ddc_network:
   nifi1:
-    image: ${REGISTRY_HOST}${nifi_image}
+    image: ${REGISTRY}${nifi_image}
     deploy:
       mode: replicated
       placement:
@@ -85,7 +85,7 @@ services:
     networks:
       ddc_network:
   nifi2:
-    image: ${REGISTRY_HOST}${nifi_image}
+    image: ${REGISTRY}${nifi_image}
     deploy:
       mode: replicated
       placement:
@@ -119,7 +119,7 @@ services:
     networks:
       ddc_network:
   nifi3:
-    image: ${REGISTRY_HOST}${nifi_image}
+    image: ${REGISTRY}${nifi_image}
     deploy:
       mode: replicated
       placement:
