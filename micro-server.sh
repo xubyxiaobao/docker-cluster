@@ -46,11 +46,11 @@ fi
 
 if [ "all" == "$service" ]; then
     echo  "开始加载所有服务执行脚本"
-    for file in $(ls ${base_dir}/micro-server/*.jar) ; do
+    for file in $(ls ${base_dir}/apps/*.jar) ; do
         server_name=$(basename $file|awk '{print substr($0,1,length($0)-4)}')
-        /bin/bash ${base_dir}/micro-server/${command}.sh $server_name
+        /bin/bash ${base_dir}/apps/${command}.sh $server_name
     done
 else
     echo -e "开始加载单个服务执行脚本"
-    /bin/bash ${base_dir}/micro-server/${command}.sh $service
+    /bin/bash ${base_dir}/apps/${command}.sh $service
 fi

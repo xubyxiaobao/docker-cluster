@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  server:
+    image: ${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}
+    deploy:
+      mode: replicated
+#      placement:
+#        constraints:
+#          - "node.role==worker"
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+      resources:
+        limits:
+          memory: ${kafka_container_memory}
+    environment:
+      JVM_ARG_1: "-Xmx512m"
+      JVM_ARG_2: "-Xms512m"
+      JVM_ARG_3: "-XX:+UseConcMarkSweepGC"
+      JVM_ARG_4: "-XX:+UseParNewGC"
+      JVM_ARG_5: "-XX:CMSInitiatingOccupancyFraction=75"
+      JVM_ARG_7: "-XX:CMSMaxAbortablePrecleanTime=5000"
+    command: ${MICRO_COMMAND}
+    volumes:
+      - app-logs-volume:/opt/logs
+    networks:
+      ddc_network:
+        aliases:
+          - ${MICRO_SERVER}
+
+volumes:
+  app-logs-volume:
+networks:
+  ddc_network:
+    external: true
+    name: ${NETWORK}

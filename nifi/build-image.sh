@@ -25,7 +25,7 @@ echo "证书trustStorePassword: ${truststore_password}"
 
 #2、生成证书，nifi开启https所必须
 docker run --rm --name nifi-tool -it  -v ${dir}/${config_path}/secure:/data/  \
---entrypoint /bin/bash apache/nifi:1.11.4 \
+--entrypoint /bin/bash ${REGISTRY}apache/nifi:1.11.4 \
 /opt/nifi/nifi-toolkit-current/bin/tls-toolkit.sh standalone \
 -n "${node_hosts}" -o '/data' -O 'true' \
 -C 'cn=admin,dc=gridsum,dc=com' \
@@ -69,7 +69,7 @@ docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${nifi_image}  ${dir
 docker push ${REGISTRY}${nifi_image}
 
 #生成nginx转发配置文件
-touch ${dir}/${config_path}/nginx-nifi.conf
+touch ${dir}/${config_path}/nifi.conf
 nifi_port=8443
 
 OLD_IFS="$IFS"
@@ -77,23 +77,24 @@ IFS=","
 arr=(${node_hosts})
 for nhost in ${arr[@]}
 do
-    echo "   server {                                            " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       listen $nifi_port;                              " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       server_name  $nhost;                            " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       ssl_certificate nifi-cert.pem;                  " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       ssl_certificate_key nifi-key.key;               " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       ssl_session_cache shared:SSL:1m;                " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       ssl_session_timeout 5m;                         " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       ssl_ciphers HIGH:!aNULL:!MD5;                   " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       ssl_prefer_server_ciphers on;                   " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       location / {                                    " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "           proxy_pass https://$nhost:$nifi_port/;      " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "       }                                               " >> ${dir}/${config_path}/nginx-nifi.conf
-    echo "   }                                                   " >> ${dir}/${config_path}/nginx-nifi.conf
+    echo "   server {                                            " >> ${dir}/${config_path}/nifi.conf
+    echo "       listen $nifi_port;                              " >> ${dir}/${config_path}/nifi.conf
+    echo "       server_name  $nhost;                            " >> ${dir}/${config_path}/nifi.conf
+    echo "       ssl_certificate nifi-cert.pem;                  " >> ${dir}/${config_path}/nifi.conf
+    echo "       ssl_certificate_key nifi-key.key;               " >> ${dir}/${config_path}/nifi.conf
+    echo "       ssl_session_cache shared:SSL:1m;                " >> ${dir}/${config_path}/nifi.conf
+    echo "       ssl_session_timeout 5m;                         " >> ${dir}/${config_path}/nifi.conf
+    echo "       ssl_ciphers HIGH:!aNULL:!MD5;                   " >> ${dir}/${config_path}/nifi.conf
+    echo "       ssl_prefer_server_ciphers on;                   " >> ${dir}/${config_path}/nifi.conf
+    echo "       location / {                                    " >> ${dir}/${config_path}/nifi.conf
+    echo "           proxy_pass https://$nhost:$nifi_port/;      " >> ${dir}/${config_path}/nifi.conf
+    echo "       }                                               " >> ${dir}/${config_path}/nifi.conf
+    echo "   }                                                   " >> ${dir}/${config_path}/nifi.conf
 done
 
 
-# 将 config/secure/nifi-key.key config/secure/nifi-cert.pem  config/nginx-nifi.conf 移动到 nginx文件夹下
+# 将 config/secure/nifi-key.key config/secure/nifi-cert.pem  config/nifi.conf 移动到 nginx文件夹下
 nginx_dir=$(cd ${dir}/../nginx; pwd);
-mv ${dir}/${config_path}/nginx-nifi.conf ${dir}/${config_path}/secure/nifi-key.key \
-    ${dir}/${config_path}/secure/nifi-cert.pem  $nginx_dir/
+mv ${dir}/${config_path}/secure/nifi-cert.pem ${dir}/${config_path}/secure/nifi-key.key \
+      $nginx_dir/
+\mv ${dir}/${config_path}/nifi.conf $nginx_dir/conf.d/

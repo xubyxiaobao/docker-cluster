@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  servie:
+    image: ${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}
+    ports:
+      - "10005:10005"
+    volumes:
+      - front-logs-volume:/var/log/nginx
+    networks:
+      ddc_network:
+        aliases:
+          - frontend
+volumes:
+  front-logs-volume:
+networks:
+  ddc_network:
+    external: true
+    name: ${NETWORK}

@@ -4,10 +4,14 @@ services:
     image: ${REGISTRY}${nginx_image}
     ports:
       - "8443:8443"
+    volumes:
+      - nginx-logs-volume:/var/log/nginx
     networks:
       ddc_network:
         aliases:
           - nginx
+volumes:
+  nginx-logs-volume:
 networks:
   ddc_network:
     external: true

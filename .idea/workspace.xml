@@ -2,33 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="803924c8-e0cd-4ccb-a3b6-09d2bca8ef8e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/micro-server/auth-center.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/auth-server.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/gateway-zuul.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/micro-server/register-center.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-registry/load-images.sh" beforeDir="false" afterPath="$PROJECT_DIR$/docker-registry/load-images.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env.sh" beforeDir="false" afterPath="$PROJECT_DIR$/env.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kafka/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/kafka/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/micro-server/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/micro-server/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/micro-server/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/micro-server/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/micro-server/start.sh" beforeDir="false" afterPath="$PROJECT_DIR$/micro-server/start.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongodb/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongodb/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/build-image.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongodb/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongodb/post-handler.sh" beforeDir="false" afterPath="$PROJECT_DIR$/mongodb/post-handler.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mysql/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/mysql/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nginx/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nginx/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/build-image.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nginx/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nifi/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nifi/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/build-image.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nifi/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/nifi/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/redis/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/build-image.sh" beforeDir="false" afterPath="$PROJECT_DIR$/redis/build-image.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redis/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/redis/docker-stack.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scp2Linux.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scp2Linux.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zookeeper/docker-stack.yml" beforeDir="false" afterPath="$PROJECT_DIR$/zookeeper/docker-stack.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,11 +139,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="micro-service over" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2355" y="0" key="CommitChangelistDialog2" timestamp="1594362178908">
+    <state x="2355" y="0" key="CommitChangelistDialog2" timestamp="1594380025363">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state x="611" y="117" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594290850072" />
-    <state x="2355" y="0" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594362178908" />
+    <state x="2355" y="0" key="CommitChangelistDialog2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594380025363" />
     <state x="1920" y="0" key="DiffContextDialog" timestamp="1593771068144">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
@@ -178,26 +152,26 @@
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state x="2383" y="122" key="FileChooserDialogImpl/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594260825655" />
-    <state width="1323" height="209" key="GridCell.Tab.0.bottom" timestamp="1594379606620">
+    <state width="1323" height="209" key="GridCell.Tab.0.bottom" timestamp="1594380096594">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594291006544" />
-    <state width="1323" height="209" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594379606620" />
-    <state width="1323" height="209" key="GridCell.Tab.0.center" timestamp="1594379606620">
+    <state width="1323" height="209" key="GridCell.Tab.0.bottom/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594380096594" />
+    <state width="1323" height="209" key="GridCell.Tab.0.center" timestamp="1594380096594">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594291006543" />
-    <state width="1323" height="209" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594379606620" />
-    <state width="1323" height="209" key="GridCell.Tab.0.left" timestamp="1594379606619">
+    <state width="1323" height="209" key="GridCell.Tab.0.center/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594380096594" />
+    <state width="1323" height="209" key="GridCell.Tab.0.left" timestamp="1594380096594">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594291006543" />
-    <state width="1323" height="209" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594379606619" />
-    <state width="1323" height="209" key="GridCell.Tab.0.right" timestamp="1594379606620">
+    <state width="1323" height="209" key="GridCell.Tab.0.left/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594380096594" />
+    <state width="1323" height="209" key="GridCell.Tab.0.right" timestamp="1594380096594">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
     <state width="1877" height="169" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594291006543" />
-    <state width="1323" height="209" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594379606620" />
+    <state width="1323" height="209" key="GridCell.Tab.0.right/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594380096594" />
     <state x="2372" y="77" key="RollbackChangesDialog" timestamp="1593771070646">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>
@@ -207,11 +181,11 @@
     </state>
     <state x="261" y="13" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1593772548377" />
     <state x="2106" y="9" key="SettingsEditor/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1593740662541" />
-    <state x="2195" y="100" key="Vcs.Push.Dialog.v2" timestamp="1594362211757">
-      <screen x="1920" y="0" width="1366" height="728" />
+    <state x="387" y="143" key="Vcs.Push.Dialog.v2" timestamp="1594605213891">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="387" y="143" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594290870825" />
-    <state x="2195" y="100" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594362211757" />
+    <state x="387" y="143" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@0.0.1920.1040" timestamp="1594605213891" />
+    <state x="2195" y="100" key="Vcs.Push.Dialog.v2/1920.0.1366.728/0.0.1920.1040@1920.0.1366.728" timestamp="1594380035605" />
     <state x="2012" y="92" width="1182" height="544" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1594377651392">
       <screen x="1920" y="0" width="1366" height="728" />
     </state>

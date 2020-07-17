@@ -85,7 +85,6 @@ export mysql_root_passwd=root
 
 #===========================================================================
 #所有的微服务，包含在这里面的微服务才会启动
-
-export MICRO_SERVER_COMMANDS='spring-web1="--server.port=9081"
-spring-web2="--server.port=9082" spring-web3="--server.port=9083"
-spring-web4="--server.port=9084" spring-web5="--server.port=9085"'
+# 微服务spring-web1的springboot启动参数为 --server.port=9081 ，spring-web2的springboot启动参数为 --server.port=9082
+# export MICRO_SERVER_COMMANDS='spring-web1="--server.port=9081"
+#spring-web2="--server.port=9082"'

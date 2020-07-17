@@ -3,11 +3,14 @@
            
   | 主机名 |  IP | swarm节点属性|
   | :-----: | :---: | :-----:|
-  | ddc1  |  192.168.35.101 | manager |
+  | ddc1  |  192.168.35.101 | manager   |
   | ddc2  |  192.168.35.102 | manager   |
   | ddc3  |  192.168.35.103 | manager   |
+> 操作系统要求：Centos7.2
+
 
 ## 准备工作
+> 首先需要选择一台服务器作为私服的运行服务器，记录ip。例如ddc3 ：192.168.35.103(很重要，后面会使用) 
 ### 端口开放
 为了保证docker-swarm之间的通信，需开放如下端口
 - 2377 TCP 
@@ -20,44 +23,15 @@ firewall-cmd --zone=public --add-port=7946/tcp --permanent
 firewall-cmd --zone=public --add-port=7946/udp --permanent
 firewall-cmd --zone=public --add-port=4789/tcp --permanent
 firewall-cmd --zone=public --add-port=4789/udp --permanent
+firewall-cmd --zone=public --add-port=5000/tcp --permanent
 firewall-cmd --reload
 ```
 
-### jdk(只需要在运行脚本的服务器上安装)
-- [下载地址](ftp://big.gxkjbg.com:8021/201704/tools/jdk-linux-x64.tar.gz)
-- 将压缩包放在目录 /opt 下
-- 解压 `tar -zxvf jdk-linux-x64.tar.gz`
-- 设置环境变量
-```bash
-# 在/etc/profile最后一行添加
-export JAVA_HOME=/opt/jdk1.8.0_131
-export CLASSPATH=$JAVA_HOME/lib/
-export PATH=$PATH:$JAVA_HOME/bin
-export PATH JAVA_HOME CLASSPATH
-```
-- 使环境变量立即生效 `source /etc/profile`
 
-### maven(只需要在运行脚本的服务器上安装)
-- 将压缩包放在目录 /opt 下
-- 解压 `tar -zxvf jdk-linux-x64.tar.gz`
-- 设置环境变量
+### docker安装(所有服务器都需要安装)
+####1、删除旧docker
 ```bash
-# 在/etc/profile 最后一行添加
-export MAVEN_HOME=/opt/apache-maven-3.6.3
-export PATH=$MAVEN_HOME/bin:$PATH
-```
-- 使环境变量立即生效 `source /etc/profile`
-
-### openssl
-```bash
-yum -y install openssl
-yum -y install openssl-devel
-```
-
-### docker
-#### 1、卸载存留的docker
-```bash
-sudo yum remove docker \
+$ sudo yum remove docker \
                   docker-client \
                   docker-client-latest \
                   docker-common \
@@ -66,134 +40,159 @@ sudo yum remove docker \
                   docker-logrotate \
                   docker-engine
 ```
-#### 2、安装必要依赖
+####2、安装
+下载网盘中的文件：[docker-ce-19.03.12-3.el7.x86_64.rpm](http://pan.gridsum.com/index.php/apps/files/?dir=/docker%E5%AE%89%E8%A3%85&fileid=1835584)，
+将文件上传至服务器 `/opt`下，执行如下命令
 ```bash
-sudo yum install -y yum-utils \
-    device-mapper-persistent-data \
-    lvm2
+sudo yum -y  install /opt/docker-ce-19.03.12-3.el7.x86_64.rpm
 ```
 
-#### 3、设置yum源
+#### 3、更改配置
 ```bash
-sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+echo -e "net.bridge.bridge-nf-call-ip6tables = 1 \nnet.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf
+sysctl -p
 ```
+> 消除docker安装后的网络警告
 
-#### 4、安装docker
-```bash
-sudo yum install -y docker-ce docker-ce-cli containerd.io
-```
-#### 5、配置docker国内镜像，加快镜像下载速度
+设置私服ip(docker默认使用https方式访问私服，添加如下配置是为了能用http访问私服)
+> 注意：下面的`insecure-registries`为私服IP，根据各自情况填写
 ```bash
 sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
 {
-  "registry-mirrors": ["http://hub-mirror.c.163.com"]
+  "insecure-registries": ["192.168.33.100:5000"] 
 }
 EOF
 ```
->国内加速地址列表：<br/>
-> Docker中国区官方镜像:
-> https://registry.docker-cn.com <br/>
-> 网易:
-> http://hub-mirror.c.163.com<br/>
-> ustc:
-> https://docker.mirrors.ustc.edu.cn<br/>
-> 中国科技大学:
-> https://docker.mirrors.ustc.edu.cn<br/>
- 
-  
-#### 6、设置docker为服务
+
+#### 4、设置docker为服务
 ```bash
 sudo systemctl enable docker
 ```
-
-#### 7、启动docker
+#### 5、启动docker
 ```bash
 sudo systemctl start docker
 ```
-#### 8、验证
+#### 6、验证
 ```bash
-sudo docker run hello-world
+sudo docker info
 ```
 会显示类似如下信息
 ```bash
-[vagrant@ddc2 ~]$ sudo docker run hello-world
-Unable to find image 'hello-world:latest' locally
-latest: Pulling from library/hello-world
-0e03bdcc26d7: Pull complete
-Digest: sha256:d58e752213a51785838f9eed2b7a498ffa1cb3aa7f946dda11af39286c3db9a9
-Status: Downloaded newer image for hello-world:latest
+[root@dockerRegistry opt]# docker info
+Client:
+ Debug Mode: false
 
-Hello from Docker!
-This message shows that your installation appears to be working correctly.
-
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-    (amd64)
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
- $ docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker ID:
- https://hub.docker.com/
-
-For more examples and ideas, visit:
- https://docs.docker.com/get-started/
+Server:
+ Containers: 1
+  Running: 1
+  Paused: 0
+  Stopped: 0
+ Images: 1
+ Server Version: 19.03.12
+ Storage Driver: overlay2
+  Backing Filesystem: xfs
+  Supports d_type: true
+  Native Overlay Diff: true
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: runc
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: 7ad184331fa3e55e52b890ea95e65ba581ae3429
+ runc version: dc9208a3303feef5b3839f4323d9beb36df0a9dd
+ init version: fec3683
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 3.10.0-957.12.2.el7.x86_64
+ Operating System: CentOS Linux 7 (Core)
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 2
+ Total Memory: 1.795GiB
+ Name: dockerRegistry
+ ID: SY6H:5I3E:S5XS:K4TL:6LT5:ZDDU:N2CY:ZUWS:VROA:LPLS:4IIT:EROP
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Registry Mirrors:
+  https://7z5eap9m.mirror.aliyuncs.com/
+ Live Restore Enabled: false
 
 ```
-
-### 安装docker-registry 私服
-选取一台服务器作为registry容器运行的宿主机，并修改**每台**docker服务器的配置 /etc/docker/daemon.json
-例如：服务器ddc3(192.168.35.103)作为私服，端口5000为registry容器暴露服务的端口
-```json 
-vi /etc/docker/daemon.json
-
-{
-  "insecure-registries": ["192.168.35.103:5000"]  
-}
-```
-在该服务器上运行下面的命令启动私服
+#### docker服务数据路径
+docker安装之后默认的服务数据存放根路径为/var/lib/docker目录下，var目录默认使用的是根分区的磁盘空间；所以这是非常危险的事情；随着我们镜像、启动的容器实例开始增多的时候，磁盘所消耗的空间也会越来越大，所以我们必须要做数据迁移和修改docker服务的默认存储位置路径
+##### 1、创建docker容器存放的路径
 ```bash
-docker run -d --name registry -p 5000:5000 \
--v /opt/registry-repository/:/tmp/registry \
---restart=always registry
+mkdir -p /home/data/docker/lib
+```
+##### 2、停止Docker服务并迁移数据到新目录
+```bash
+systemctl stop docker.service
+rsync -avz /var/lib/docker/ /home/data/docker/lib/
 ```
 
-给镜像打标签
+##### 3、创建Docker配置文件
 ```bash
-docker tag redis:5.0.9 192.168.35.103:5000/redis:5.0.9
+mkdir -p /etc/systemd/system/docker.service.d/ 
+vim /etc/systemd/system/docker.service.d/devicemapper.conf
+
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd  --graph=/home/data/docker/lib/
 ```
-将镜像推送至私服
+##### 4、重启Docker服务
 ```bash
-docker push 192.168.35.103:5000/redis:5.0.9
+systemctl daemon-reload 
+systemctl restart docker
 ```
-查看私服镜像列表
+##### 5、查看现在容器存放的目录
 ```bash
-#浏览器访问
-http://192.168.35.103:5000/v2/_catalog
+docker info | grep "Dir"
 ```
-查看某个镜像具体版本
+
+
+### 运行docker-registry私服
+#### 1、文件下载
+下载网盘文件[images.tar.gz、script.tar](http://pan.gridsum.com/index.php/apps/files/?dir=/docker%E5%AE%89%E8%A3%85&fileid=1835584)
+#### 2、启动私服
+- 将下载的文件`images.tar.gz`、`script.tar`上传至将要运行私服的服务器路径下`/opt`，解压`script.tar`
 ```bash
-http://192.168.35.103:5000/v2/image/tags/list
+# 解压脚本
+tar -xf /opt/script.tar -C /opt/
 ```
-[本地私服搭建执行脚本](./docker-registry/README.md)
+打开/opt/env.sh，进行必要配置修改
+- `REGISTRY_HOST`修改为当前服务器的ip(其他服务器可访问到的)
+- `REGISTRY_STORAGE`表示私服数据存储的路径，可按照需要修改
+执行脚本，运行私服
+```bash
+/opt/load-images.sh
+```
+
+>如果有其他镜像也需要上传至私服，可参考文档[私服相关](docker-registry/README.md)
 
 
 ### docker-swarm 初始化
 #### 1、在ddc1服务器上执行如下命令
+注意ip需要根据情况修改
 ```bash
-sudo docker swarm init --advertise-addr ddc1-ip
+sudo docker swarm init --advertise-addr 192.168.35.101
 ```
 
 #### 2、执行效果类似下面所示
 ```bash
 [vagrant@ddc1 ~]$ sudo docker swarm init --advertise-addr=192.168.35.101
-Swarm initialized: current node (ilgubzc1uklqalpzoq0t7mhcm) is now a manager.
+Swarm initialized: current node  (ilgubzc1uklqalpzoq0t7mhcm) is now a manager.
 
 To add a worker to this swarm, run the following command:
 
@@ -202,7 +201,8 @@ To add a worker to this swarm, run the following command:
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 
 ```
-#### 3、在ddc2、ddc3上执行类似命令加入swarm集群，直接复制manager节点初始化时生成的加入swarm语句
+#### 3、加入swarm
+在其余docker实例上执行一下命令加入swarm集群(直接复制manager节点初始化时生成的加入swarm语句)
 ```bash
   sudo  docker swarm join --token SWMTKN-1-28jew2i7wjib6obtmpsubaz8krvxd0zqj7g3bbaidwh7ni1s11-bud9m3xf5j73g8yibwyynm8d3 192.168.35.101:2377
 ```
@@ -231,7 +231,7 @@ Node ddc2 promoted to a manager in the swarm.
 Node ddc3 promoted to a manager in the swarm.
 ```
 
-#### 7、为3台服务器打标签
+#### 7、为docker实例进行标记
 ```bash
 sudo docker node update --label-add nodename=swarm1 ddc1
 
@@ -239,7 +239,7 @@ sudo docker node update --label-add nodename=swarm2 ddc2
 
 sudo docker node update --label-add nodename=swarm3 ddc3
 ```
-
+> 对docker节点进行标记，是为了在进行swarm部署时，每个服务可以根据标签部署至特定的服务器上
 
 ### Note
 #### 非root用户加入docker用户组省去sudo
@@ -249,37 +249,39 @@ usermod -aG docker xxxx
 ```
 
 
-## 项目中脚本的使用
-### 新建文件夹，将本项目所有文件都放入其中
-```bash
-# 例如
-mkdir /opt/docker-clsuter
-```
-### 授予可执行全选
+## 启动基础服务
+### 1、上传文件
+将本项目中`deploy-cluster`文件夹下的所有文件都上传至任意一台服务器`/opt/docker`目录下
+
+### 2、授予可执行权限
 ```bash
 chmod -R a+x /opt/docker-cluster/
 ```
-### 根据需求修改env.sh
-对env.sh进行一些必要参数的修改
+### 3、根据需求修改env.sh
+对env.sh进行一些必要参数的修改，具体参数见env.sh文件注释
 
 
-## 启动基础服务集群
+### 4、服务启动
 命令格式：
 ```bash
 cd /opt/docker-cluster
-./base-server.sh start/stop [serverName/all]
+./base-server.sh command [serverName]
 ```
-> 启动集群命令说明：
->第一个参数：start/stop 部署集群/停止集群
->
->第二个参数[可选]：服务的名称，可以为 zookeeper、kafka、mongodb、redis、nifi、nginx，如果没有则启动所有服务
-
->文件说明：env.sh启动过程中的参数配置，详情请看env.sh文件
->
->服务启动过程中，可以使用docker service logs -f  <服务名> 查看启动日志
-
-- 如果需要添加新的服务，需要创建一个名称为新服务的文件夹，将放入docker-stack.yml配置文件，并且在`env.sh`的变量ALL_SERVERS后追加新服务，并且添加对应的xx_image(镜像名称)、xx_nums(docker-stack.yml中包含的服务数量)
-- 如果构建该服务需要执行一些操作时，在其中放入名称为`post-handler.sh`的可执行脚本即可
+- 启动集群命令说明：
+    - command：为start/stop，必填参数
+        - start：启动/更新服务
+        - stop：停止服务
+    - serverName：服务名，选填，为空时启动所有服务
+    - example：
+        - 启动zookeeper：`./base-server.sh start zookeeper`
+        - 启动kafka：`./base-server.sh start kafka`
+        - 启动所有服务：`./base-server.sh start all`(all可填可不填)
+    - note：
+        - `serverName` 的范围为env.sh的参数ALL_SERVICES
+        - 服务启动过程中，可以使用`docker service logs -f  <serviceName>` 查看启动日志;serviceName可以运行命令`docker service ls`获取
+        
+        
+>如果需要添加新的服务，需要创建一个名称为新服务的文件夹，将放入docker-stack.yml配置文件，并且在`env.sh`的变量ALL_SERVERS后追加新服务，并且添加对应的xx_image(镜像名称)、xx_nums(docker-stack.yml中包含的服务数量)<br/>
 
 #### 服务说明
 ##### zookeeper 
@@ -325,34 +327,108 @@ zookeeper配置修改详细地址：https://github.com/docker-library/docs/tree/
 - env.sh文件中提供了nifi的管理员密码(账号默认为admin)
 
 ####nginx
-nginx为外部访问nifi必备组件，必须在构建nifi之后才能构建nginx镜像
+nginx为外部访问nifi必备组件，必须在构建nifi之后才能构建nginx镜像。
 
 
 
 ## 启动微服务
+> 微服务可部署在worker节点中，只需要将新的docker实例加入swarm就可以，将deploy-cluster/apps/docker-stack.xml中的注释解开，
+> ddc中的服务即可只部署到worker节点上
+
+### 4、服务启动
 命令格式：
 ```bash
 cd /opt/docker-cluster
-./micro-server.sh start/stop [serverName/all]
+./micro-server.sh command [projectName]
 ```
-### 步骤：
-1、将需要运行的jar包放到`micro-server`文件夹下
-2、运行命令，如 './micro-server.sh start spring-web' 启动spring-web.jar服务 
+- 启动微服务命令说明：
+    - command：为start/stop，必填参数
+        - start：启动/更新服务
+        - stop：停止服务
+    - projectName：项目名，选填，为空时启动`docker-cluster/apps/`目录下所有的`.jar`包
+    - example：
+        - 启动register-center：`./micro-server.sh start register-center`
+        - 启动所有服务：`./micro-server.sh start all`(all可填可不填)
+   
+     
+#### Note：
+1、将需要运行的jar包放到`docker-cluster/apps/`文件夹下
+2、运行命令，如 './micro-server.sh start spring-web' 启动/更新spring-web.jar服务 
 3、运行命令，如 './micro-server.sh stop spring-web'  停止spring-web.jar服务
 >Note：<br/>
 >1、启动微服务的名称与jar包的文件名去除`.jar`后一致(如启动spring-web.jar 命令为 ./micro-server.sh start spring-web.jar)<br/>
->2、jar包必须放到`micro-server`文件夹下<br/>
->3、使用命令 `docker service logs -f spinrg-web_server` 可以查看服务spring-web的日志<br/>
->4、环境变量MICRO_SERVER_COMMANDS(env.sh中)会追加到对应的命令行中，例如设置
+>2、jar包必须放到`docker-cluster/apps/`文件夹下<br/>
+>3、环境变量MICRO_SERVER_COMMANDS(env.sh中)会追加到对应的命令行中，例如设置
 >`MICRO_SERVER_COMMANDS='spring-web1="--server.port=8080" spring-web2="--server.port=9090"'`，
 >启动 spring-web1、spring-web2服务时，最终执行的java命令为: <br/>
 >`java -jar spring-web1 --server.port=8080` <br/>
 >`java -jar spring-web2 --server.port=9090` <br/>
->5、设置env.sh中的变量`MICRO_SERVER_COMMANDS`请特别注意格式：<br/>
+>4、设置env.sh中的变量`MICRO_SERVER_COMMANDS`请特别注意格式：<br/>
 >`MICRO_SERVER_COMMANDS='serverName1="xxx"  serverName2="xxx" serverName3="xxx"'`<br/>
 >注意单引号与双引号！！！ <br/>
 >6、可以添加micro-server/docker-stack.yml中的environment变量来修改jvm的启动参数，格式为JVM_ARG_([0-9])+。
 >在运行java命令时，会遍历环境变量，从中获取 JVM_ARG_([0-9])+ 格式的参数，并拼接到java启动命令中。
 >例如有参数： JVM_ARG_1="-Xmx512m"、JVM_ARG_2="-Xms512m"、JVM_ARG_3="-XX:+UseConcMarkSweepGC"，
 >容器启动时会运行命令 `java -Xmx512m -Xms512m -jar xx.jar`
+
+
+
+## 前端
+镜像运行时，会将`frontend.tar`解压到路径`/opt/`文件夹下，读取`conf.d`文件夹中的配置文件。
+因此只需要响应的修改这2个文件的内容即可；<br/>
+在配置文件中配置了对应的端口后，还需要在`frontend/docker-stack.yml`配置文件项`ports`中映射对应的端口。<br/>
+例如，配置文件为
+```bash
+#frontend/conf.d/frontend.conf
+server {
+        listen     10005;
+        server_name  8002test;
+
+
+        location ^~ /center/ {
+                alias /opt/frontend/center_test/dist/;
+                index  index.html index.htm;
+        }
+
+        location ^~ /energy/ {
+                alias /opt/frontend/energy_test/dist/;
+                index  index.html index.htm;
+        }
+
+        location ^~ /ddc/ {
+                alias /opt/frontend/ddc_test/dist/;
+                index  index.html index.htm;
+        }
+        location ^~ /equip/ {
+                alias /opt/frontend/equip_test/dist/;
+                index  index.html index.htm;
+        }
+
+        location ^~ /wisdom/ {
+                alias /opt/frontend/wisdom_test/dist/;
+                index  index.html index.htm;
+        }
+
+    }
+```
+frontend.tar解压后为
+```bash
+/opt/frontend/center_test/
+/opt/frontend/energy_test/
+/opt/frontend/ddc_test/
+/opt/frontend/equip_test/
+/opt/frontend/wisdom_test/
+```
+在`docker-stack.yml`配置文件中的`ports`项必须对端口10005做映射，以供外网访问
+
+
+## 配置相关
+- **zookeeper**:zoo1:2181，zoo2:2181，zoo3:2181
+- **kafka**:kafka1:9092，kafka2:9092，kafka3:9092
+- **mongodb**:mongodb1:27017，mongodb2:27017，mongodb3:27017
+- **redis**:redis1:6379，redis2:6379，redis3:6379，sentinel1:26379，sentinel2:26379，sentinel3:26379
+- **mysql**：mysql:3306
+- **nifi**:nifi1，nifi2，nifi3
+需要密码的都在env.sh配置文件中，按照说明做相应修改即可
+
 
