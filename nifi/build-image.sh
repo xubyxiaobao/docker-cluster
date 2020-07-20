@@ -1,4 +1,8 @@
 #!/bin/bash
+
+
+[ ! ${ENV_SHELL_LOAD} ] && srouce ../env.sh
+
 # docker镜像的版本号
 keystore_password=QKZv1hSWAFQYZ+WU1jjF5ank+l4igeOfQRp+OSbkkrs
 truststore_password=rHkWR1gDNW3R9hgbeRsT3OM3Ue0zwGtQqcFKJD2EXWE

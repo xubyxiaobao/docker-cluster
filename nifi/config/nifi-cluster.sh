@@ -128,10 +128,15 @@ sed -i -e 's|<property name="User Search Filter"></property>|<property name="Use
 sed -i -e 's|<property name="Identity Strategy"></property>|<property name="Identity Strategy">'"${LDAP_IDENTITY_STRATEGY}"'</property>|'  ${NIFI_HOME}/conf/login-identity-providers.xml
 
 
+### 删除bootstrap.conf配置文件中run.as配置
+sed -i 's/run.as.*/ /g' "$NIFI_HOME/conf/bootstrap.conf"
 
+
+echo "" >> "${NIFI_HOME}/logs/nifi-app.log"
 
 "${NIFI_HOME}/bin/nifi.sh" run &
 nifi_pid="$!"
+
 tail -F --pid=${nifi_pid} "${NIFI_HOME}/logs/nifi-app.log" &
 
 trap 'echo Received trapped signal, beginning shutdown...;./bin/nifi.sh stop;exit 0;' TERM HUP INT;

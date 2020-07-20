@@ -5,10 +5,21 @@ export ENV_SHELL_LOAD=true
 #==================================
 #全局变量
 
-export REGISTRY_HOST=192.168.35.103
-export REGISTRY_PORT=5000
-
+#私服的ip 端口信息
+export REGISTRY_HOST=
+export REGISTRY_PORT=
 export REGISTRY="${REGISTRY_HOST}:${REGISTRY_PORT}/"
+
+#docker node ls命令下hostname列的值
+export NODE1_HOSTNAME=
+export NODE2_HOSTNAME=
+export NODE3_HOSTNAME=
+
+
+export NODE1_TAG=manager1
+export NODE2_TAG=manager2
+export NODE3_TAG=manager3
+
 
 #项目运行docker子网
 export NETWORK=ddc_network

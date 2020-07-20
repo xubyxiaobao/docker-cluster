@@ -1,5 +1,8 @@
 #!/bin/bash
 
+[ ! ${ENV_SHELL_LOAD} ] && srouce ../env.sh
+
+
 echo -e "\033[33m开始进行镜像构建：${redis_image}\033[0m"
 
 dir=$(cd $(dirname $0);pwd);

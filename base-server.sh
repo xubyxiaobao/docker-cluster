@@ -12,6 +12,12 @@ source ${BASE_DIR}/env.sh
 #加载函数
 source ${BASE_DIR}/common.sh
 
+#必填配置项检测
+baseArgsCheck
+
+#node节点标记
+baseNodeTag
+
 
 # 参数检测
 argsCheck $@
@@ -30,9 +36,8 @@ isInclude $ALL_SERVICES"all|" $service "服务"
 networkCheck
 
 
-export REGISTRY="${REGISTRY_HOST}:${REGISTRY_PORT}/"
+
 ## 服务部署
-#
 if [ "all" == "$service" ]; then
     echo  "开始执行所有服务脚本"
     arr=($(echo "$ALL_SERVICES"| awk '{print substr($0,2,length($0)-2)}'|sed 's/|/ /g'))

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "开始进行镜像构建：${mongodb_image}"
+[ ! ${ENV_SHELL_LOAD} ] && srouce ../env.sh
 
 dir=$(cd $(dirname $0);pwd);
 

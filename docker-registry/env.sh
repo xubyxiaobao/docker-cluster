@@ -8,10 +8,21 @@ wurstmeister/kafka:2.12-2.5.0"
 ## 从docker导出本地镜像压缩后的文件名，会自动拼接tar.gz
 export IMAGES_TAR_NAME="images"
 ## registry的服务器地址
-export REGISTRY_HOST=192.168.35.103
+export REGISTRY_HOST=
 ## 私服在宿主机上暴露的端口
 export REGISTRY_PORT=5000
 ## 私服数据持久化的地址
-export REGISTRY_STORAGE=/opt/registry-repository
+export REGISTRY_STORAGE=
 
 
+function argsCheck(){
+    need_props=("REGISTRY_HOST REGISTRY_PORT REGISTRY_STORAGE")
+    for var in $need_props
+    do
+        #是否填写私服地址
+        if [ -z "${!var}" ]; then
+            echo -e "\033[31m配置项${var}为必填项\033[0m"
+            exit 127
+        fi
+    done
+}

@@ -8,7 +8,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager1"
+          - node.labels.nodename==${NODE1_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -34,7 +34,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager2"
+          - node.labels.nodename==${NODE2_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -63,7 +63,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager3"
+          - node.labels.nodename==${NODE3_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -90,7 +90,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager1"
+          - node.labels.nodename==${NODE1_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -121,7 +121,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager2"
+          - node.labels.nodename==${NODE2_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -152,7 +152,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager3"
+          - node.labels.nodename==${NODE3_TAG}
       replicas: 1
       restart_policy:
         condition: any

@@ -115,4 +115,41 @@ function stop(){
     greenMsg  "${service_name}已停止"
 }
 
+#检查环境变量是否齐全
+function baseArgsCheck(){
+    need_props=("REGISTRY_HOST REGISTRY_PORT NODE1_HOSTNAME NODE2_HOSTNAME NODE3_HOSTNAME")
 
+    for var in $need_props
+    do
+        if [ -z "${!var}" ]; then
+            redMsg "配置项${var}为必填项"
+            exit 127
+        fi
+    done
+}
+
+
+function baseNodeTag(){
+    yellowMsg "正在进行节点标记检测"
+    for var in $(env)
+    do
+        env_var=$(echo "$var" | cut -d= -f1)
+
+        if [[ "$env_var" =~ ^NODE[0-9]_HOSTNAME$ ]]; then
+            #swarm中是否存在$var 节点
+            if [ -n $(docker node ls -qf "name=${!env_var}") ]; then
+                tag="$(echo $env_var|cut -d_ -f1)_TAG"
+                #确保该节点已打标
+                if [ -z $(docker node inspect --format={{.Spec.Labels}} ${!env_var}|grep "nodename:${!tag}") ]; then
+                    #进行打标操作
+                    docker node update --label-add nodename=${!tag} ${!env_var}
+                    greenMsg "${!env_var}已成功标记为${!tag}"
+                fi
+            else
+                redMsg "swarm中不存在节点 ${!env_var}！"
+                exit 127
+            fi
+        fi
+    done
+    greenMsg "节点标记检测完毕"
+}

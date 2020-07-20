@@ -2,11 +2,13 @@ version: '3.8'
 services:
   kafka1:
     image: ${REGISTRY}${kafka_image}
+    ports:
+    - 9094:9094
     deploy:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager1"
+          - node.labels.nodename==${NODE1_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -18,8 +20,10 @@ services:
           memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
-    # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://192.168.33.22:9094
-      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${HOSTNAME}:9094
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFAK_NUM_PARTITION: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
@@ -31,11 +35,13 @@ services:
           - kafka1
   kafka2:
     image: ${REGISTRY}${kafka_image}
+    ports:
+      - 9095:9095
     deploy:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager2"
+          - node.labels.nodename==${NODE2_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -47,8 +53,10 @@ services:
           memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
-      # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://192.168.33.22:9094
-      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${HOSTNAME}:9095
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFAK_NUM_PARTITION: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
@@ -60,11 +68,13 @@ services:
           - kafka2
   kafka3:
     image: ${REGISTRY}${kafka_image}
+    ports:
+      - 9096:9096
     deploy:
       mode: replicated
       placement:
         constraints:
-          - "node.labels.nodename==manager3"
+          - node.labels.nodename==${NODE3_TAG}
       replicas: 1
       restart_policy:
         condition: any
@@ -76,9 +86,10 @@ services:
           memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
-      # KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://192.168.33.22:9094
-      KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFAK_NUM_PARTITION: 3
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${HOSTNAME}:9096
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9096
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
       - kafka3-data-volume:/kafka

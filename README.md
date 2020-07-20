@@ -9,8 +9,8 @@
 > 操作系统要求：Centos7.2
 
 
-## 准备工作
-> 首先需要选择一台服务器作为私服的运行服务器，记录ip。例如ddc3 ：192.168.35.103(很重要，后面会使用) 
+## 准备工作选择
+> 首先需要任意一台服务器作为私服的运行服务器，记录ip。例如ddc3 ：192.168.35.103(很重要，后面会使用) 
 ### 端口开放
 为了保证docker-swarm之间的通信，需开放如下端口
 - 2377 TCP 
@@ -41,18 +41,18 @@ $ sudo yum remove docker \
                   docker-engine
 ```
 ####2、安装
-下载网盘中的文件：[docker-ce-19.03.12-3.el7.x86_64.rpm](http://pan.gridsum.com/index.php/apps/files/?dir=/docker%E5%AE%89%E8%A3%85&fileid=1835584)，
-将文件上传至服务器 `/opt`下，执行如下命令
+下载网盘中的文件：[docker-ce-19.03.12-3.el7.x86_64.rpm](http://pan.gridsum.com/index.php/s/16yxZYdBRZro86M)，
+将文件上传至服务器，执行如下命令
 ```bash
-sudo yum -y  install /opt/docker-ce-19.03.12-3.el7.x86_64.rpm
-```
+   sudo yum -y  install /opt/docker-ce-19.03.12-3.el7.x86_64.rpm
+   ```
 
 #### 3、更改配置
+消除docker安装后的网络警告
 ```bash
 echo -e "net.bridge.bridge-nf-call-ip6tables = 1 \nnet.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf
 sysctl -p
 ```
-> 消除docker安装后的网络警告
 
 设置私服ip(docker默认使用https方式访问私服，添加如下配置是为了能用http访问私服)
 > 注意：下面的`insecure-registries`为私服IP，根据各自情况填写
@@ -77,7 +77,7 @@ sudo systemctl start docker
 ```bash
 sudo docker info
 ```
-会显示类似如下信息
+会显示类似如下信息，则安装成功
 ```bash
 [root@dockerRegistry opt]# docker info
 Client:
@@ -128,7 +128,6 @@ Server:
  Registry Mirrors:
   https://7z5eap9m.mirror.aliyuncs.com/
  Live Restore Enabled: false
-
 ```
 #### docker服务数据路径
 docker安装之后默认的服务数据存放根路径为/var/lib/docker目录下，var目录默认使用的是根分区的磁盘空间；所以这是非常危险的事情；随着我们镜像、启动的容器实例开始增多的时候，磁盘所消耗的空间也会越来越大，所以我们必须要做数据迁移和修改docker服务的默认存储位置路径
@@ -136,13 +135,7 @@ docker安装之后默认的服务数据存放根路径为/var/lib/docker目录�
 ```bash
 mkdir -p /home/data/docker/lib
 ```
-##### 2、停止Docker服务并迁移数据到新目录
-```bash
-systemctl stop docker.service
-rsync -avz /var/lib/docker/ /home/data/docker/lib/
-```
-
-##### 3、创建Docker配置文件
+##### 2、编辑Docker配置文件
 ```bash
 mkdir -p /etc/systemd/system/docker.service.d/ 
 vim /etc/systemd/system/docker.service.d/devicemapper.conf
@@ -151,9 +144,11 @@ vim /etc/systemd/system/docker.service.d/devicemapper.conf
 ExecStart=
 ExecStart=/usr/bin/dockerd  --graph=/home/data/docker/lib/
 ```
-##### 4、重启Docker服务
+##### 3、重启Docker服务
 ```bash
-systemctl daemon-reload 
+#docker配置文件重新加载
+systemctl daemon-reload
+#docker服务重启 
 systemctl restart docker
 ```
 ##### 5、查看现在容器存放的目录
@@ -163,28 +158,29 @@ docker info | grep "Dir"
 
 
 ### 运行docker-registry私服
+> 类似maven私服
 #### 1、文件下载
 下载网盘文件[images.tar.gz、script.tar](http://pan.gridsum.com/index.php/apps/files/?dir=/docker%E5%AE%89%E8%A3%85&fileid=1835584)
 #### 2、启动私服
-- 将下载的文件`images.tar.gz`、`script.tar`上传至将要运行私服的服务器路径下`/opt`，解压`script.tar`
+- 将下载的文件`images.tar.gz`、`script.tar`上传至将要运行私服的服务器路径下，解压`script.tar`
 ```bash
 # 解压脚本
-tar -xf /opt/script.tar -C /opt/
+tar -xf script.tar
 ```
-打开/opt/env.sh，进行必要配置修改
+打开`env.sh`文件，进行必要配置
 - `REGISTRY_HOST`修改为当前服务器的ip(其他服务器可访问到的)
-- `REGISTRY_STORAGE`表示私服数据存储的路径，可按照需要修改
-执行脚本，运行私服
+- `REGISTRY_STORAGE`表示私服数据存储的路径，可按照需要修改(note：请注意修改该路径)
+授予脚本可执行权限后执行脚本，运行私服
 ```bash
-/opt/load-images.sh
+chmod a+x load-images.sh && ./load-images.sh
 ```
 
 >如果有其他镜像也需要上传至私服，可参考文档[私服相关](docker-registry/README.md)
 
 
 ### docker-swarm 初始化
-#### 1、在ddc1服务器上执行如下命令
-注意ip需要根据情况修改
+#### 1、swarm初始化
+在任意一台服务器上执行如下命令，ip为执行该命令服务器，注意ip需要根据情况修改
 ```bash
 sudo docker swarm init --advertise-addr 192.168.35.101
 ```
@@ -202,7 +198,7 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 
 ```
 #### 3、加入swarm
-在其余docker实例上执行一下命令加入swarm集群(直接复制manager节点初始化时生成的加入swarm语句)
+在其余docker实例上执行一下命令加入swarm集群(直接复制manager节点初始化时生成的加入swarm命令)
 ```bash
   sudo  docker swarm join --token SWMTKN-1-28jew2i7wjib6obtmpsubaz8krvxd0zqj7g3bbaidwh7ni1s11-bud9m3xf5j73g8yibwyynm8d3 192.168.35.101:2377
 ```
@@ -213,15 +209,23 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 [vagrant@ddc3 ~]$ sudo  docker swarm join --token SWMTKN-1-28jew2i7wjib6obtmpsubaz8krvxd0zqj7g3bbaidwh7ni1s11-bud9m3xf5j73g8yibwyynm8d3 192.168.35.101:2377
 This node joined a swarm as a worker.
 ```
-#### 5、在ddc1服务器上进行验证
+#### 5、在步骤1的服务器上进行验证
 ```bash
 sudo docker node ls
 ```
-
-#### 6、将ddc2、ddc3服务器提升为manager节点
 ```bash
-#在192.168.35.101服务器上执行如下命令
-docker node promote <node>
+[root@ddc2 data]# docker node ls
+ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+0ud5um1ppr727eyoik7b05u1w     ddc1                Ready               Active                                  19.03.12
+pqp1b5d4f6dcj6coykld44svs *   ddc2                Ready               Active              Leader              19.03.12
+x78f2e8w0w7ce9340i5l1ogu3     ddc3                Ready               Active                                  19.03.12
+
+```
+
+#### 6、将其余两台服务器提升为manager节点
+```bash
+#在步骤1的服务器上执行如下命令，hostname为5步骤中 HOSTNAME 列
+docker node promote hostname
 ```
 执行结果如下所示
 ```bash
@@ -230,16 +234,6 @@ Node ddc2 promoted to a manager in the swarm.
 [vagrant@ddc1 ~]$ sudo docker node promote ddc3
 Node ddc3 promoted to a manager in the swarm.
 ```
-
-#### 7、为docker实例进行标记
-```bash
-sudo docker node update --label-add nodename=swarm1 ddc1
-
-sudo docker node update --label-add nodename=swarm2 ddc2
-
-sudo docker node update --label-add nodename=swarm3 ddc3
-```
-> 对docker节点进行标记，是为了在进行swarm部署时，每个服务可以根据标签部署至特定的服务器上
 
 ### Note
 #### 非root用户加入docker用户组省去sudo
@@ -251,11 +245,11 @@ usermod -aG docker xxxx
 
 ## 启动基础服务
 ### 1、上传文件
-将本项目中`deploy-cluster`文件夹下的所有文件都上传至任意一台服务器`/opt/docker`目录下
+将本项目中`deploy-cluster`文件夹下的所有文件都上传至任意一台服务器上
 
 ### 2、授予可执行权限
 ```bash
-chmod -R a+x /opt/docker-cluster/
+chmod -R a+x ./*.sh
 ```
 ### 3、根据需求修改env.sh
 对env.sh进行一些必要参数的修改，具体参数见env.sh文件注释
@@ -264,7 +258,6 @@ chmod -R a+x /opt/docker-cluster/
 ### 4、服务启动
 命令格式：
 ```bash
-cd /opt/docker-cluster
 ./base-server.sh command [serverName]
 ```
 - 启动集群命令说明：
