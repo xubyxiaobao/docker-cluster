@@ -37,8 +37,8 @@ function scpExclude(){
 }
 
 
-exclude_files="|README.md|scp2Linux.sh|"
-#include_files="|frontend|"
+#exclude_files="|README.md|scp2Linux.sh|env.sh|"
+include_files="|mongodb|"
 #desc_path="root@192.168.33.21:/opt/docker/"
 #desc_path="root@192.168.35.101:/opt/docker/"
 desc_path="root@192.168.35.103:/opt/docker/"

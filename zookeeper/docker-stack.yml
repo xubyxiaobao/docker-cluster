@@ -4,7 +4,10 @@ services:
     image: ${REGISTRY}${zookeeper_image}
     hostname: zoo1
     ports:
-      - 2181:2181
+      - target: 2181
+        published: ${zookeeper_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -34,7 +37,10 @@ services:
     image: ${REGISTRY}${zookeeper_image}
     hostname: zoo2
     ports:
-      - 2182:2181
+      - target: 2181
+        published: ${zookeeper_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -64,7 +70,10 @@ services:
     image: ${REGISTRY}${zookeeper_image}
     hostname: zoo3
     ports:
-      - 2183:2181
+      - target: 2181
+        published: ${zookeeper_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:

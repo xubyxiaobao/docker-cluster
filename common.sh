@@ -117,7 +117,7 @@ function stop(){
 
 #检查环境变量是否齐全
 function baseArgsCheck(){
-    need_props=("REGISTRY_HOST REGISTRY_PORT NODE1_HOSTNAME NODE2_HOSTNAME NODE3_HOSTNAME")
+    need_props=("REGISTRY_HOST REGISTRY_PORT NODE1_HOSTNAME NODE2_HOSTNAME NODE3_HOSTNAME NODE1_IP NODE2_IP NODE3_IP")
 
     for var in $need_props
     do
@@ -137,7 +137,12 @@ function baseNodeTag(){
 
         if [[ "$env_var" =~ ^NODE[0-9]_HOSTNAME$ ]]; then
             #swarm中是否存在$var 节点
-            if [ -n $(docker node ls -qf "name=${!env_var}") ]; then
+            if [ -n "$(docker node ls -qf name=${!env_var})" ]; then
+                #检测节点是否在线
+                if [ $(docker node inspect --format={{.Status.State}} ${!env_var}) != "ready" ]; then
+                    redMsg "${!env_var}节点不处于ready状态，无法部署服务"
+                    exit  127
+                fi
                 tag="$(echo $env_var|cut -d_ -f1)_TAG"
                 #确保该节点已打标
                 if [ -z $(docker node inspect --format={{.Spec.Labels}} ${!env_var}|grep "nodename:${!tag}") ]; then

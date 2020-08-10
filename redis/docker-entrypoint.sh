@@ -47,6 +47,12 @@ if [[ $1 == "redis-server" ]]; then
         updateConfig "port" "${PORT}" $config_path
     fi
 
+    if [ ! -z "$ANNOUNCE_IP" ]; then
+        updateConfig "slave-announce-ip" "${ANNOUNCE_IP}" $config_path
+    fi
+    if [ ! -z "$ANNOUNCE_PORT" ]; then
+        updateConfig "slave-announce-port" "${ANNOUNCE_PORT}" $config_path
+    fi
 else
     ## 如果为哨兵模式，则更改为对应的配置文件路径
     config_path="/data/sentinel.conf";
@@ -71,6 +77,12 @@ else
     fi
     if [  -z "$SENTINEL_FAILOVER_TIMEOUT" ]; then
         SENTINEL_FAILOVER_TIMEOUT=180000
+    fi
+    if [ ! -z "$ANNOUNCE_IP" ]; then
+        updateConfig "sentinel announce-ip" "${ANNOUNCE_IP}" $config_path
+    fi
+    if [ ! -z "$ANNOUNCE_PORT" ]; then
+        updateConfig "sentinel announce-port" "${ANNOUNCE_PORT}" $config_path
     fi
     updateConfig "port" "${PORT}" $config_path
     updateConfig "sentinel down-after-milliseconds" "${SENTINEL_NAME} ${SENTINEL_DOWN_AFTER}" $config_path

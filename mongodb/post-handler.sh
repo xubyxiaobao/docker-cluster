@@ -5,9 +5,9 @@ function mongoClusterInit(){
     result=$(docker run --rm -it --network=$NETWORK --entrypoint mongo ${REGISTRY}${mongodb_image} \
     --host mongodb${SERVICE_SUFFIX}_mongodb1 --username ${mongodb_admin} \
     --password ${mongodb_password} \
-    --eval 'config={"_id":"rs","members":[{"_id":0,"host":"mongodb1:27017"},
-    {"_id":1,"host":"mongodb2:27017"},
-    {"_id":2,"host":"mongodb3:27017"}]};
+    --eval 'config={"_id":"rs","members":[{"_id":0,"host":"'${NODE1_IP}':'${mongodb_out_port}'"},
+    {"_id":1,"host":"'${NODE2_IP}':'${mongodb_out_port}'"},
+    {"_id":2,"host":"'${NODE3_IP}':'${mongodb_out_port}'"}]};
     rs.initiate(config);');
 
     echo "mongodb集群初始化结果>>>>>>>>>>>>>>>>>"
@@ -47,7 +47,7 @@ do
                 mongoClusterInit
             done
         else
-            echo -e  "\033[32mongodb已初始化，不在进行初始化\033[0m"
+            echo -e  "\033[32 mongodb已初始化，不再进行初始化 \033[0m"
             exit 0;
         fi
 done
@@ -55,6 +55,6 @@ done
 
 #use admin;db.createUser({user:"admin",pwd:"password",roles: [{ role: "root", db: "admin" }]})
 
-echo -e "\033[31mmongodb初始化失败\033[0m"
+echo -e "\033[31 mmongodb初始化失败 \033[0m"
 exit 127
 

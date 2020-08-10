@@ -3,7 +3,10 @@ services:
   redis1:
     image: ${REGISTRY}${redis_image}
     ports:
-      - 6379:6379
+      - target: 6379
+        published: ${redis_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -20,6 +23,8 @@ services:
           memory: ${redis_container_memory}
     environment:
       PASSWORD: ${redis_password}
+      ANNOUNCE_IP: ${NODE1_IP}
+      ANNOUNCE_PORT: ${redis_out_port}
     volumes:
       - redis1-volume:/data
     networks:
@@ -29,7 +34,10 @@ services:
   redis2:
     image: ${REGISTRY}${redis_image}
     ports:
-      - 6380:6379
+      - target: 6379
+        published: ${redis_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -48,7 +56,9 @@ services:
       - redis1
     environment:
       PASSWORD: ${redis_password}
-      SLAVEOF: "redis1 6379"
+      SLAVEOF: "${NODE1_IP} ${redis_out_port}"
+      ANNOUNCE_IP: ${NODE2_IP}
+      ANNOUNCE_PORT: ${redis_out_port}
     volumes:
       - redis2-volume:/data
     networks:
@@ -58,7 +68,10 @@ services:
   redis3:
     image: ${REGISTRY}${redis_image}
     ports:
-      - 6381:6379
+      - target: 6379
+        published: ${redis_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -77,7 +90,9 @@ services:
       - redis1
     environment:
       PASSWORD: ${redis_password}
-      SLAVEOF: "redis1 6379"
+      SLAVEOF: "${NODE1_IP} ${redis_out_port}"
+      ANNOUNCE_IP: ${NODE3_IP}
+      ANNOUNCE_PORT: ${redis_out_port}
     volumes:
       - redis3-volume:/data
     networks:
@@ -86,6 +101,11 @@ services:
           - redis3
   sentinel1:
     image: ${REGISTRY}${redis_image}
+    ports:
+      - target: 26379
+        published: ${redis_sentinel_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -102,8 +122,10 @@ services:
           memory: ${redis_sentinel_container_memory}
     environment:
       PORT: 26379
-      SENTINEL_MASTER: "redis1 6379 2"
+      SENTINEL_MASTER: "${NODE1_IP} ${redis_out_port} 2"
       SENTINEL_AUTHPASS: ${redis_password}
+      ANNOUNCE_IP: ${NODE1_IP}
+      ANNOUNCE_PORT: ${redis_sentinel_out_port}
     command: redis-sentinel
     depends_on:
       - redis1
@@ -117,6 +139,11 @@ services:
           - sentinel1
   sentinel2:
     image: ${REGISTRY}${redis_image}
+    ports:
+      - target: 26379
+        published: ${redis_sentinel_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -133,8 +160,10 @@ services:
           memory: ${redis_sentinel_container_memory}
     environment:
       PORT: 26379
-      SENTINEL_MASTER: "redis1 6379 2"
+      SENTINEL_MASTER: "${NODE1_IP} ${redis_out_port} 2"
       SENTINEL_AUTHPASS: ${redis_password}
+      ANNOUNCE_IP: ${NODE2_IP}
+      ANNOUNCE_PORT: ${redis_sentinel_out_port}
     command: redis-sentinel
     depends_on:
       - redis1
@@ -148,6 +177,11 @@ services:
           - sentinel2
   sentinel3:
     image: ${REGISTRY}${redis_image}
+    ports:
+      - target: 26379
+        published: ${redis_sentinel_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -164,8 +198,10 @@ services:
           memory: ${redis_sentinel_container_memory}
     environment:
       PORT: 26379
-      SENTINEL_MASTER: "redis1 6379 2"
+      SENTINEL_MASTER: "${NODE1_IP} ${redis_out_port} 2"
       SENTINEL_AUTHPASS: ${redis_password}
+      ANNOUNCE_IP: ${NODE3_IP}
+      ANNOUNCE_PORT: ${redis_sentinel_out_port}
     command: redis-sentinel
     depends_on:
       - redis1

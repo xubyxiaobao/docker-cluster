@@ -3,7 +3,10 @@ services:
   kafka1:
     image: ${REGISTRY}${kafka_image}
     ports:
-    - 9094:9094
+      - target: ${kafka_out_port}
+        published: ${kafka_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -20,11 +23,11 @@ services:
           memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${HOSTNAME}:9094
-      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${NODE1_IP}:${kafka_out_port}
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:${kafka_out_port}
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFAK_NUM_PARTITION: 3
+      KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
       - kafka1-data-volume:/kafka
@@ -36,7 +39,10 @@ services:
   kafka2:
     image: ${REGISTRY}${kafka_image}
     ports:
-      - 9095:9095
+      - target: ${kafka_out_port}
+        published: ${kafka_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -53,11 +59,11 @@ services:
           memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${HOSTNAME}:9095
-      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9095
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${NODE2_IP}:${kafka_out_port}
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:${kafka_out_port}
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFAK_NUM_PARTITION: 3
+      KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
       - kafka2-data-volume:/kafka
@@ -69,7 +75,10 @@ services:
   kafka3:
     image: ${REGISTRY}${kafka_image}
     ports:
-      - 9096:9096
+      - target: ${kafka_out_port}
+        published: ${kafka_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -86,10 +95,11 @@ services:
           memory: ${kafka_container_memory}
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${HOSTNAME}:9096
-      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:9096
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${NODE3_IP}:${kafka_out_port}
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:${kafka_out_port}
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
     volumes:
       - kafka3-data-volume:/kafka

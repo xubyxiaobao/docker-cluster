@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-[ ! ${ENV_SHELL_LOAD} ] && srouce ../env.sh
+[ ! ${ENV_SHELL_LOAD} ] && source ../env.sh
 
 # docker镜像的版本号
 keystore_password=QKZv1hSWAFQYZ+WU1jjF5ank+l4igeOfQRp+OSbkkrs

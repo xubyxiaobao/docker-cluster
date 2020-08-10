@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #检查环境变量是否存在，从而判断../env.sh是否需要加载
-[ ! ${ENV_SHELL_LOAD} ] && srouce ../env.sh
+[ ! ${ENV_SHELL_LOAD} ] && source ../env.sh
 
 
 dir=$(cd $(dirname $0);pwd);

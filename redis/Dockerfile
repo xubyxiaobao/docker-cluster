@@ -12,7 +12,10 @@ ENV BIND_IP=0.0.0.0 \
     SENTINEL_AUTHPASS="" \
     SENTINEL_DOWN_AFTER=30000 \
     SENTINEL_PARALLEL_SYNCS=1 \
-    SENTINEL_FAILOVER_TIMEOUT=180000
+    SENTINEL_FAILOVER_TIMEOUT=180000 \
+    # 外网ip port
+    ANNOUNCE_IP="" \
+    ANNOUNCE_PORT=""
 
 # 复制配置文件到容器中
 COPY ./redis_template.conf  ./sentinel_template.conf ./docker-entrypoint.sh /data/

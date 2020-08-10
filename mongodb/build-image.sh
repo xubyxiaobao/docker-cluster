@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ ! ${ENV_SHELL_LOAD} ] && srouce ../env.sh
+[ ! ${ENV_SHELL_LOAD} ] && source ../env.sh
 
 dir=$(cd $(dirname $0);pwd);
 

@@ -349,7 +349,7 @@ cd /opt/docker-cluster
 2、运行命令，如 './micro-server.sh start spring-web' 启动/更新spring-web.jar服务 
 3、运行命令，如 './micro-server.sh stop spring-web'  停止spring-web.jar服务
 >Note：<br/>
->1、启动微服务的名称与jar包的文件名去除`.jar`后一致(如启动spring-web.jar 命令为 ./micro-server.sh start spring-web.jar)<br/>
+>1、启动微服务的名称与jar包的文件名去除`.jar`后一致(如启动spring-web.jar 命令为 ./micro-server.sh start spring-web)<br/>
 >2、jar包必须放到`docker-cluster/apps/`文件夹下<br/>
 >3、环境变量MICRO_SERVER_COMMANDS(env.sh中)会追加到对应的命令行中，例如设置
 >`MICRO_SERVER_COMMANDS='spring-web1="--server.port=8080" spring-web2="--server.port=9090"'`，

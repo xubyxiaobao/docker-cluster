@@ -3,7 +3,10 @@ services:
   mongodb1:
     image: ${REGISTRY}${mongodb_image}
     ports:
-      - 27017:27017
+      - target: 27017
+        published: ${mongodb_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -38,7 +41,10 @@ services:
   mongodb2:
     image: ${REGISTRY}${mongodb_image}
     ports:
-      - 27018:27017
+      - target: 27017
+        published: ${mongodb_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
@@ -75,7 +81,10 @@ services:
   mongodb3:
     image: ${REGISTRY}${mongodb_image}
     ports:
-      - 27019:27017
+      - target: 27017
+        published: ${mongodb_out_port}
+        protocol: tcp
+        mode: host
     deploy:
       mode: replicated
       placement:
