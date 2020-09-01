@@ -1,12 +1,13 @@
 #!/bin/bash
 
 
-[ ! ${ENV_SHELL_LOAD} ] && source ../env.sh
+dir=$(cd $(dirname $0);pwd);
+[ ! ${ENV_SHELL_LOAD} ] && source $dir/../env.sh
 
 # docker镜像的版本号
 keystore_password=QKZv1hSWAFQYZ+WU1jjF5ank+l4igeOfQRp+OSbkkrs
 truststore_password=rHkWR1gDNW3R9hgbeRsT3OM3Ue0zwGtQqcFKJD2EXWE
-dir=$(cd $(dirname $0);pwd);
+
 #必须与docker-stack.yml文件中对应的服务名相同
 node_hosts="nifi1,nifi2,nifi3"
 config_path="config"
@@ -29,7 +30,7 @@ echo "证书trustStorePassword: ${truststore_password}"
 
 #2、生成证书，nifi开启https所必须
 docker run --rm --name nifi-tool -it  -v ${dir}/${config_path}/secure:/data/  \
---entrypoint /bin/bash ${REGISTRY}apache/nifi:1.11.4 \
+--entrypoint /bin/bash ${REGISTRY}${basic_nifi_image} \
 /opt/nifi/nifi-toolkit-current/bin/tls-toolkit.sh standalone \
 -n "${node_hosts}" -o '/data' -O 'true' \
 -C 'cn=admin,dc=gridsum,dc=com' \
@@ -68,7 +69,7 @@ done
 IFS="$OLD_IFS"
 
 echo "构建镜像配置检查完成"
-docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${nifi_image}  ${dir}/
+docker build --build-arg REGISTRY=${REGISTRY} --build-arg BASIC_IMAGE=${basic_nifi_image}  -t ${REGISTRY}${nifi_image}  ${dir}/
 
 docker push ${REGISTRY}${nifi_image}
 

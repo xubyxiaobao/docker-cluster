@@ -2,6 +2,11 @@ version: '3.8'
 services:
   zoo1:
     image: ${REGISTRY}${zookeeper_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     hostname: zoo1
     ports:
       - target: 2181
@@ -23,18 +28,25 @@ services:
         limits:
           memory: ${zookeeper_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
       ZOO_MY_ID: 1
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     volumes:
       - zoo1-data-volume:/data
       - zoo1-datalog-volume:/datalog
       - zoo1-log-volume:/logs
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
             - zoo1
   zoo2:
     image: ${REGISTRY}${zookeeper_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     hostname: zoo2
     ports:
       - target: 2181
@@ -56,18 +68,25 @@ services:
         limits:
           memory: ${zookeeper_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
       ZOO_MY_ID: 2
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     volumes:
       - zoo2-data-volume:/data
       - zoo2-datalog-volume:/datalog
       - zoo2-log-volume:/logs
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - zoo2
   zoo3:
     image: ${REGISTRY}${zookeeper_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     hostname: zoo3
     ports:
       - target: 2181
@@ -89,17 +108,18 @@ services:
         limits:
           memory: ${zookeeper_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
       ZOO_MY_ID: 3
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
     volumes:
       - zoo3-data-volume:/data
       - zoo3-datalog-volume:/datalog
       - zoo3-log-volume:/logs
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - zoo3
-
 volumes:
   zoo1-data-volume:
   zoo1-datalog-volume:

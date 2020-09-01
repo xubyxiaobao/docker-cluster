@@ -1,24 +1,22 @@
 ARG REGISTRY=${REGISTRY}
-FROM ${REGISTRY}redis:5.0.9
+ARG BASIC_IMAGE=${BASIC_IMAGE}
+FROM ${REGISTRY}${BASIC_IMAGE}
     # redis主从所需要的配置
 ENV BIND_IP=0.0.0.0 \
-    SLAVEOF="" \
     PASSWORD="" \
     PROTECTED_MODE="no" \
     PORT=6379 \
-    # sentinel 所需配置
-    SENTINEL_NAME="mymaster" \
-    SENTINEL_MASTER="" \
-    SENTINEL_AUTHPASS="" \
-    SENTINEL_DOWN_AFTER=30000 \
-    SENTINEL_PARALLEL_SYNCS=1 \
-    SENTINEL_FAILOVER_TIMEOUT=180000 \
+    # cluster相关
+    CLUSTER_ENABLED="yes" \
+    CLUSTER_CONFIG_FILE="nodes.conf" \
+    CLUSTER_NODE_TIMEOUT="15000" \
     # 外网ip port
     ANNOUNCE_IP="" \
-    ANNOUNCE_PORT=""
+    ANNOUNCE_PORT="" \
+    ANNOUNCE_BUS_PORT=""
 
 # 复制配置文件到容器中
-COPY ./redis_template.conf  ./sentinel_template.conf ./docker-entrypoint.sh /data/
+COPY ./redis_template.conf  ./docker-entrypoint.sh /data/
 
 # 移动脚本docker-entrypoint.sh到 /usr/local/bin/，覆盖docker-entrypoint.sh
 RUN chown redis:redis /data/* \

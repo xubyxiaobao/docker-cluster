@@ -11,7 +11,7 @@ export STACK_SERVER=$1
 export MICRO_SERVER="gridsum/${STACK_SERVER}"
 export MICRO_VERSION=$(date +%Y%m%d%H%M%S)
 
-docker build  --build-arg REGISTRY=${REGISTRY}   -t "${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}"  ${base_dir}/
+docker build  --build-arg REGISTRY=${REGISTRY} --build-arg BASIC_IMAGE=${basic_nginx_image}   -t "${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}"  ${base_dir}/
 
 if [ $? -ne 0 ]; then
     echo "构建失败"

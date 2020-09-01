@@ -1,13 +1,11 @@
 #!/bin/bash
 
 #检查环境变量是否存在，从而判断../env.sh是否需要加载
-[ ! ${ENV_SHELL_LOAD} ] && source ../env.sh
-
-
 dir=$(cd $(dirname $0);pwd);
+[ ! ${ENV_SHELL_LOAD} ] && source $dir/../env.sh
 
 echo "开始构建nginx镜像"
-docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${nginx_image}  ${dir}/
+docker build --build-arg REGISTRY=${REGISTRY} --build-arg BASIC_IMAGE=${basic_nginx_image} -t ${REGISTRY}${nginx_image}  ${dir}/
 
 docker push ${REGISTRY}${nginx_image}
 if [ $? -ne 0 ]; then

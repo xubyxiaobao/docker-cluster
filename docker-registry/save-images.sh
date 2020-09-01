@@ -6,9 +6,6 @@ base_dir=$(cd $(dirname $0);pwd)
 source  ./env.sh
 
 
-#参数检查
-argsCheck
-
 mkdir -p ${base_dir}/$IMAGES_TAR_NAME
 
 download_path=${base_dir}/$IMAGES_TAR_NAME
@@ -42,4 +39,4 @@ tar_name=$(basename $download_path)
 echo -e "\033[33m开始将已下载的镜像打包，打包文件名：${tar_name}.tar.gz\033[0m"
 cd $download_path;
 tar -czvf "../${tar_name}.tar.gz" *
-echo -e "\033[32m打包完成，打包文件名：$download_path${tar_name}.tar.gz\033[0m"
+echo -e "\033[32m打包完成，打包路径：$download_path${tar_name}.tar.gz\033[0m"

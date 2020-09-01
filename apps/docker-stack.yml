@@ -2,11 +2,19 @@ version: '3.8'
 services:
   server:
     image: ${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     deploy:
       mode: replicated
       placement:
         constraints:
-          - "node.role==worker"
+          - node.labels.nodename==${NODE3_TAG}
+#      placement:
+#        constraints:
+#          - "node.role==worker"
       replicas: 1
       restart_policy:
         condition: any
@@ -15,8 +23,9 @@ services:
         window: 120s
       resources:
         limits:
-          memory: ${kafka_container_memory}
+          memory: ${default_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
       JVM_ARG_1: "-Xmx512m"
       JVM_ARG_2: "-Xms512m"
       JVM_ARG_3: "-XX:+UseConcMarkSweepGC"
@@ -26,6 +35,7 @@ services:
     command: ${MICRO_COMMAND}
     volumes:
       - app-logs-volume:/opt/logs
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:

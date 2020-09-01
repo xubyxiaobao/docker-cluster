@@ -52,10 +52,10 @@ function networkCheck(){
     echo  "检查是否创建docker子网${NETWORK}"
     is_created=false;
     ##检查docker子网是否创建成功
-    if [ -z $(docker network ls  -f name=$NETWORK -q) ]; then
+    if [ -z "$(docker network ls  -f name=$NETWORK -q)" ]; then
         #不存在 subnet
         is_created=true
-    elif [ -z $(docker network ls  -f name=$NETWORK -f driver=overlay -q) ]; then
+    elif [ -z "$(docker network ls  -f name=$NETWORK -f driver=overlay -q)" ]; then
         #存在subnet网络但不是overlay类型的
         redMsg "已存在docker子网${NETWORK},但子网类型不为overlay，请先删除"
         exit 127
@@ -98,7 +98,7 @@ function start(){
         [ -f "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}" ] && /bin/bash "${BASE_DIR}/${service_name}/${IMAGE_BUILD_SCRIPT}"
     fi
 
-    stack_name="${service_name}${SERVICE_SUFFIX}"
+    stack_name="${SERVICE_SUFFIX}${service_name}"
     yellowMsg  "开始部署${stack_name}服务..."
     docker stack deploy -c ${BASE_DIR}/${service_name}/${STACK_CONFIG} ${stack_name}
     checkUP ${stack_name} ${service_number}
@@ -109,7 +109,7 @@ function start(){
 
 function stop(){
     service_name=$1;
-    stack_name="${service_name}${SERVICE_SUFFIX}"
+    stack_name="${SERVICE_SUFFIX}${service_name}"
     yellowMsg  "开始停止${service_name}服务..."
     docker stack rm ${stack_name}
     greenMsg  "${service_name}已停止"

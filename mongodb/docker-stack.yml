@@ -2,6 +2,11 @@ version: '3.8'
 services:
   mongodb1:
     image: ${REGISTRY}${mongodb_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - target: 27017
         published: ${mongodb_out_port}
@@ -22,11 +27,13 @@ services:
         limits:
           memory: ${mongodb_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
       MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
     volumes:
       - mongodb1-data-volume:/data/db
       - mongodb1-config-volume:/data/configdb
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
@@ -40,6 +47,11 @@ services:
       - /data/mongodb.key
   mongodb2:
     image: ${REGISTRY}${mongodb_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - target: 27017
         published: ${mongodb_out_port}
@@ -62,11 +74,13 @@ services:
     depends_on:
       - mongodb1
     environment:
+      TZ: "Asia/Shanghai"
       MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
     volumes:
       - mongodb2-data-volume:/data/db
       - mongodb2-config-volume:/data/configdb
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
@@ -80,6 +94,11 @@ services:
       - /data/mongodb.key
   mongodb3:
     image: ${REGISTRY}${mongodb_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - target: 27017
         published: ${mongodb_out_port}
@@ -102,11 +121,13 @@ services:
     depends_on:
       - mongodb1
     environment:
+      TZ: "Asia/Shanghai"
       MONGO_INITDB_ROOT_USERNAME: ${mongodb_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${mongodb_password}
     volumes:
       - mongodb3-data-volume:/data/db
       - mongodb3-config-volume:/data/configdb
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:

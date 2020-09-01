@@ -2,10 +2,18 @@ version: '3.8'
 services:
   servie:
     image: ${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - "10005:10005"
+    environment:
+      TZ: "Asia/Shanghai"
     volumes:
       - front-logs-volume:/var/log/nginx
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:

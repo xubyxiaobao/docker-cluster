@@ -1,14 +1,15 @@
 #!/bin/bash
 
-[ ! ${ENV_SHELL_LOAD} ] && source ../env.sh
-
 dir=$(cd $(dirname $0);pwd);
+[ ! ${ENV_SHELL_LOAD} ] && source $dir/../env.sh
+
+
 
 #生成认证文件mongodb.key
 openssl rand -base64 512 > $dir/mongodb.key
 
 # 开始构建 mongodb镜像
-docker build --build-arg REGISTRY=${REGISTRY} -t ${REGISTRY}${mongodb_image} ${dir}/
+docker build --build-arg REGISTRY=${REGISTRY} --build-arg BASIC_IMAGE=${basic_mongodb_image} -t ${REGISTRY}${mongodb_image} ${dir}/
 
 #推送镜像至私服
 docker push ${REGISTRY}${mongodb_image}

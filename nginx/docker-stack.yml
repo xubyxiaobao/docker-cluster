@@ -2,16 +2,37 @@ version: '3.8'
 services:
   nginx:
     image: ${REGISTRY}${nginx_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - "8443:8443"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.nodename==${NODE2_TAG}
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+    environment:
+      TZ: "Asia/Shanghai"
     volumes:
       - nginx-logs-volume:/var/log/nginx
+      - nginx-config-volume:/etc/nginx/
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - nginx
 volumes:
   nginx-logs-volume:
+  nginx-config-volume:
 networks:
   ddc_network:
     external: true

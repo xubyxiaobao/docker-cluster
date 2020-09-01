@@ -1,5 +1,6 @@
 ARG REGISTRY
-FROM ${REGISTRY}openjdk:8u252-jdk-buster
+ARG BASIC_IMAGE=${BASIC_IMAGE}
+FROM ${REGISTRY}${BASIC_IMAGE}
 
 ARG package
 ENV APP=${package}

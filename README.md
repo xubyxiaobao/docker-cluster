@@ -9,14 +9,179 @@
 > 操作系统要求：Centos7.2
 
 
-## 准备工作选择
-> 首先需要任意一台服务器作为私服的运行服务器，记录ip。例如ddc3 ：192.168.35.103(很重要，后面会使用) 
-### 端口开放
+## 准备工作
+### linux间时钟同步
+- 下载网盘中的文件：[ntp.tar.gz](http://pan.gridsum.com/index.php/s/16yxZYdBRZro86M)
+- 上传至**每台**服务器，解压缩
+```bash
+tar -zxvf ntp.tar.gz
+```
+- 安装`ntp`服务
+```bash
+cd ntp && rpm -ivh *.rpm --force --nodeps
+```
+- ntpServer设置(其余服务器均从该服务器同步时间)
+    - 编辑配置文件`/etc/ntp.conf`，内容如下
+    ```bash
+    # For more information about this file, see the man pages
+    # ntp.conf(5), ntp_acc(5), ntp_auth(5), ntp_clock(5), ntp_misc(5), ntp_mon(5).
+    
+    driftfile /var/lib/ntp/drift
+    
+    # Permit time synchronization with our time source, but do not
+    # permit the source to query or modify the service on this system.
+    restrict default nomodify notrap nopeer noquery
+    
+    # Permit all access over the loopback interface.  This could
+    # be tightened as well, but to do so would effect some of
+    # the administrative functions.
+    restrict 127.0.0.1 
+    restrict ::1
+    
+    # Hosts on local network are less restricted.
+    # restrict 192.168.35.0 mask 255.255.255.0 nomodify notrap
+    
+    
+    # Use public servers from the pool.ntp.org project.
+    # Please consider joining the pool (http://www.pool.ntp.org/join.html).
+    # 同步外网时间的服务器(如果不连外网需注释掉)
+    server 0.cn.pool.ntp.org
+    server 1.cn.pool.ntp.org
+    server 2.cn.pool.ntp.org
+    server 3.cn.pool.ntp.org        
+    
+    #外部时间server不可用时，以本地时间作为时间服务 
+    server  127.127.1.0     # local clock
+    fudge   127.127.1.0 stratum 8
+    
+    # Enable public key cryptography.
+    #crypto
+    
+    includefile /etc/ntp/crypto/pw
+    
+    # Key file containing the keys and key identifiers used when operating
+    # with symmetric key cryptography. 
+    keys /etc/ntp/keys
+    
+    # Specify the key identifiers which are trusted.
+    #trustedkey 4 8 42
+    
+    # Specify the key identifier to use with the ntpdc utility.
+    #requestkey 8
+    
+    # Specify the key identifier to use with the ntpq utility.
+    #controlkey 8
+    
+    # Enable writing of statistics records.
+    #statistics clockstats cryptostats loopstats peerstats
+    
+    # Disable the monitoring facility to prevent amplification attacks using ntpdc
+    # monlist command when default restrict does not include the noquery flag. See
+    # CVE-2013-5211 for more details.
+    # Note: Monitoring will not be disabled with the limited restriction flag.
+    disable monitor
+    ```
+    - 设置为服务
+    ```bash
+     systemctl enable ntpd
+    ```
+    - 同步授时中心时间((如果不连外网可忽略)) 
+    ```bash
+    ntpdate -u  0.cn.pool.ntp.org
+    ```
+    - 启动服务
+    ```bash
+    systemctl start ntpd
+    ```
+    - 检查ntp服务启动
+    ```bash
+     systemctl status ntpd
+    ```
+- ntpClient设置(从ntpServer同步时间)
+    - 编辑配置文件`/etc/ntp.conf`，内容如下(`server`配置的ip为ntpServer的ip)
+    ```bash
+     # For more information about this file, see the man pages
+     # ntp.conf(5), ntp_acc(5), ntp_auth(5), ntp_clock(5), ntp_misc(5), ntp_mon(5).
+     
+     driftfile /var/lib/ntp/drift
+     
+     # Permit time synchronization with our time source, but do not
+     # permit the source to query or modify the service on this system.
+     restrict default nomodify notrap nopeer noquery
+     
+     # Permit all access over the loopback interface.  This could
+     # be tightened as well, but to do so would effect some of
+     # the administrative functions.
+     restrict 127.0.0.1 
+     restrict ::1
+     
+     # Hosts on local network are less restricted.
+     #restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap
+     
+     # Use public servers from the pool.ntp.org project.
+
+     server 192.168.35.101 iburst
+  
+     #broadcast 192.168.1.255 autokey	# broadcast server
+     #broadcastclient			# broadcast client
+     #broadcast 224.0.1.1 autokey		# multicast server
+     #multicastclient 224.0.1.1		# multicast client
+     #manycastserver 239.255.254.254		# manycast server
+     #manycastclient 239.255.254.254 autokey # manycast client
+     
+     # Enable public key cryptography.
+     #crypto
+     
+     includefile /etc/ntp/crypto/pw
+     
+     # Key file containing the keys and key identifiers used when operating
+     # with symmetric key cryptography. 
+     keys /etc/ntp/keys
+     
+     # Specify the key identifiers which are trusted.
+     #trustedkey 4 8 42
+     
+     # Specify the key identifier to use with the ntpdc utility.
+     #requestkey 8
+     
+     # Specify the key identifier to use with the ntpq utility.
+     #controlkey 8
+     
+     # Enable writing of statistics records.
+     #statistics clockstats cryptostats loopstats peerstats
+     
+     # Disable the monitoring facility to prevent amplification attacks using ntpdc
+     # monlist command when default restrict does not include the noquery flag. See
+     # CVE-2013-5211 for more details.
+     # Note: Monitoring will not be disabled with the limited restriction flag.
+     disable monitor
+    ```
+    - 设置为服务
+    ```bash
+     systemctl enable ntpd
+    ```
+    - 启动服务
+    ```bash
+    systemctl start ntpd
+    ```
+    - 检查ntp服务启动
+    ```bash
+     systemctl status ntpd
+    ```
+- **Note**：ntp服务通过123端口进行时间同步，请注意防火墙相关设置设置
+- **Note**：如果时区错误的话，可以通过编辑文件/etc/profile进行时区设置(在文件最后添加 export TZ="Asia/Shanghai"，保存文件后执行命令source /etc/profile)
+
+
+### 防火墙
 为了保证docker-swarm之间的通信，需开放如下端口
 - 2377 TCP 
 - 7946 TCP/UDP 
 - 4789 TCP/UDP
 - 5000 TCP
+
+**Note**：其他端口根据需求自行设置
+
+
 ```bash
 firewall-cmd --zone=public --add-port=2377/tcp --permanent
 firewall-cmd --zone=public --add-port=7946/tcp --permanent
@@ -29,6 +194,7 @@ firewall-cmd --reload
 
 
 ### docker安装(所有服务器都需要安装)
+> 首先需要任意一台服务器作为私服的运行服务器，记录ip。例如ddc3 ：192.168.35.103(很重要，后面会使用) 
 ####1、删除旧docker
 ```bash
 $ sudo yum remove docker \
@@ -41,11 +207,12 @@ $ sudo yum remove docker \
                   docker-engine
 ```
 ####2、安装
-下载网盘中的文件：[docker-ce-19.03.12-3.el7.x86_64.rpm](http://pan.gridsum.com/index.php/s/16yxZYdBRZro86M)，
+下载网盘中的文件：[docker.tar](http://pan.gridsum.com/index.php/s/16yxZYdBRZro86M)，
 将文件上传至服务器，执行如下命令
 ```bash
-   sudo yum -y  install /opt/docker-ce-19.03.12-3.el7.x86_64.rpm
-   ```
+sudo tar -xvf docker.tar 
+sudo yum -y  install  containerd.io-1.2.13-3.2.el7.x86_64.rpm docker-ce-cli-19.03.12-3.el7.x86_64.rpm docker-ce-19.03.12-3.el7.x86_64.rpm
+```
 
 #### 3、更改配置
 消除docker安装后的网络警告
@@ -54,18 +221,35 @@ echo -e "net.bridge.bridge-nf-call-ip6tables = 1 \nnet.bridge.bridge-nf-call-ipt
 sysctl -p
 ```
 
-设置私服ip(docker默认使用https方式访问私服，添加如下配置是为了能用http访问私服)
+设置私服ip(docker默认使用https方式访问私服，添加如下配置是为了能用http访问私服获取镜像)
 > 注意：下面的`insecure-registries`为私服IP，根据各自情况填写
 ```bash
 sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
 {
-  "insecure-registries": ["192.168.33.100:5000"] 
+  "insecure-registries": ["192.168.55.101:5000"] 
 }
 EOF
 ```
 
-#### 4、设置docker为服务
+
+
+#### 4、更改docker数据存放路径
+docker安装之后默认的服务数据存放根路径为/var/lib/docker目录下，var目录默认使用的是根分区的磁盘空间；所以这是非常危险的事情；随着我们镜像、启动的容器实例开始增多的时候，磁盘所消耗的空间也会越来越大，所以我们必须要做数据迁移和修改docker服务的默认存储位置路径
+##### 1、创建docker容器存放的路径
+```bash
+mkdir -p /data1/docker/data
+```
+##### 2、编辑Docker配置文件
+```bash
+vi /usr/lib/systemd/system/docker.service
+
+在 `ExecStart`字段后面添加  --graph=/data1/docker/data/
+
+```
+
+
+#### 5、设置docker为服务
 ```bash
 sudo systemctl enable docker
 ```
@@ -118,7 +302,7 @@ Server:
  Total Memory: 1.795GiB
  Name: dockerRegistry
  ID: SY6H:5I3E:S5XS:K4TL:6LT5:ZDDU:N2CY:ZUWS:VROA:LPLS:4IIT:EROP
- Docker Root Dir: /var/lib/docker
+ Docker Root Dir: /data1/docker/data/
  Debug Mode: false
  Registry: https://index.docker.io/v1/
  Labels:
@@ -129,31 +313,44 @@ Server:
   https://7z5eap9m.mirror.aliyuncs.com/
  Live Restore Enabled: false
 ```
-#### docker服务数据路径
-docker安装之后默认的服务数据存放根路径为/var/lib/docker目录下，var目录默认使用的是根分区的磁盘空间；所以这是非常危险的事情；随着我们镜像、启动的容器实例开始增多的时候，磁盘所消耗的空间也会越来越大，所以我们必须要做数据迁移和修改docker服务的默认存储位置路径
-##### 1、创建docker容器存放的路径
-```bash
-mkdir -p /home/data/docker/lib
-```
-##### 2、编辑Docker配置文件
-```bash
-mkdir -p /etc/systemd/system/docker.service.d/ 
-vim /etc/systemd/system/docker.service.d/devicemapper.conf
+##### 注意查看字段`Insecure Registries` 与`Docker Root Dir`是否已更改
 
-[Service]
-ExecStart=
-ExecStart=/usr/bin/dockerd  --graph=/home/data/docker/lib/
+
+#### docker 容器日志限制
+在`/etc/docker/daemon.json`配置文件中添加如下配置，限制每个容器产生的日志文件的大小和数量。如下所示，表示每个容器产生的日志最大占用空间20m*5=100m
+```json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "20m",
+    "max-file": "5"
+  }
+}
 ```
-##### 3、重启Docker服务
+##### Note: 
+1、如果daemon.json文件不为空，例如已有配置
+```json
+{
+  "insecure-registries": ["192.168.33.100:5000"] 
+}
+```
+则增加新的配置后
+```json
+{
+  "insecure-registries": ["192.168.33.100:5000"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "20m",
+    "max-file": "5"
+  }
+}
+```
+2、修改daemon.json配置文件之后，需要重启docker
 ```bash
 #docker配置文件重新加载
 systemctl daemon-reload
 #docker服务重启 
 systemctl restart docker
-```
-##### 5、查看现在容器存放的目录
-```bash
-docker info | grep "Dir"
 ```
 
 
@@ -162,15 +359,14 @@ docker info | grep "Dir"
 #### 1、文件下载
 下载网盘文件[images.tar.gz、script.tar](http://pan.gridsum.com/index.php/apps/files/?dir=/docker%E5%AE%89%E8%A3%85&fileid=1835584)
 #### 2、启动私服
-- 将下载的文件`images.tar.gz`、`script.tar`上传至将要运行私服的服务器路径下，解压`script.tar`
+- 将下载的文件`images.tar.gz`、`script.tar`上传至将要运行私服的服务器相同目录下，解压`script.tar`
 ```bash
 # 解压脚本
 tar -xf script.tar
 ```
 打开`env.sh`文件，进行必要配置
-- `REGISTRY_HOST`修改为当前服务器的ip(其他服务器可访问到的)
-- `REGISTRY_STORAGE`表示私服数据存储的路径，可按照需要修改(note：请注意修改该路径)
-授予脚本可执行权限后执行脚本，运行私服
+- `REGISTRY_HOST`修改为当前服务器的ip(docker集群中的其他服务器可以访问到的ip)
+授予脚本可执行权限后执行脚本启动私服
 ```bash
 chmod a+x load-images.sh && ./load-images.sh
 ```
@@ -182,23 +378,19 @@ chmod a+x load-images.sh && ./load-images.sh
 #### 1、swarm初始化
 在任意一台服务器上执行如下命令，ip为执行该命令服务器，注意ip需要根据情况修改
 ```bash
-sudo docker swarm init --advertise-addr 192.168.35.101
+sudo docker swarm init --advertise-addr 192.168.55.101
 ```
-
-#### 2、执行效果类似下面所示
+#### 2、继续输入如下命令，获取加入swarm集群指令
 ```bash
-[vagrant@ddc1 ~]$ sudo docker swarm init --advertise-addr=192.168.35.101
-Swarm initialized: current node  (ilgubzc1uklqalpzoq0t7mhcm) is now a manager.
-
-To add a worker to this swarm, run the following command:
-
-    docker swarm join --token SWMTKN-1-28jew2i7wjib6obtmpsubaz8krvxd0zqj7g3bbaidwh7ni1s11-bud9m3xf5j73g8yibwyynm8d3 192.168.35.101:2377
-
-To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
-
+sudo docker swarm join-token manager
 ```
+可以获取到如下结果
+```bash
+docker swarm join --token SWMTKN-1-5gsv0yqn1ho07tuf4l2w7ruopramgaeoxu9rzqfp2kqgkbq1t7-dn5eqy4dyxsjngkq0xlda8dg4 192.168.55.101:2377
+```
+
 #### 3、加入swarm
-在其余docker实例上执行一下命令加入swarm集群(直接复制manager节点初始化时生成的加入swarm命令)
+在其他docker服务器上执行上一步骤获取到的docker指令
 ```bash
   sudo  docker swarm join --token SWMTKN-1-28jew2i7wjib6obtmpsubaz8krvxd0zqj7g3bbaidwh7ni1s11-bud9m3xf5j73g8yibwyynm8d3 192.168.35.101:2377
 ```
@@ -206,10 +398,9 @@ To add a manager to this swarm, run 'docker swarm join-token manager' and follow
 
 #### 4、成功加入swarm集群后会提示如下信息
 ```bash
-[vagrant@ddc3 ~]$ sudo  docker swarm join --token SWMTKN-1-28jew2i7wjib6obtmpsubaz8krvxd0zqj7g3bbaidwh7ni1s11-bud9m3xf5j73g8yibwyynm8d3 192.168.35.101:2377
-This node joined a swarm as a worker.
+This node joined a swarm as a manager.
 ```
-#### 5、在步骤1的服务器上进行验证
+#### 5、在第一台服务器上进行验证，本示例为192.168.35.101
 ```bash
 sudo docker node ls
 ```
@@ -222,26 +413,6 @@ x78f2e8w0w7ce9340i5l1ogu3     ddc3                Ready               Active    
 
 ```
 
-#### 6、将其余两台服务器提升为manager节点
-```bash
-#在步骤1的服务器上执行如下命令，hostname为5步骤中 HOSTNAME 列
-docker node promote hostname
-```
-执行结果如下所示
-```bash
-[vagrant@ddc1 ~]$ sudo docker node promote ddc2
-Node ddc2 promoted to a manager in the swarm.
-[vagrant@ddc1 ~]$ sudo docker node promote ddc3
-Node ddc3 promoted to a manager in the swarm.
-```
-
-### Note
-#### 非root用户加入docker用户组省去sudo
-```bash
-usermod -aG docker xxxx
-#需退出当前用户登录状态以让权限生效
-```
-
 
 ## 启动基础服务
 ### 1、上传文件
@@ -252,7 +423,15 @@ usermod -aG docker xxxx
 chmod -R a+x ./*.sh
 ```
 ### 3、根据需求修改env.sh
-对env.sh进行一些必要参数的修改，具体参数见env.sh文件注释
+
+必备参数：
+- **REGISTRY_HOST**：私服IP地址
+- **NODE?_HOSTNAME**：docker swarm集群中的节点名称，在服务器上运行命令`docker node ls`查看
+- **NODE?_IP**：docker swarm集群中的各个节点ip，在*各个*服务器上运行命令`docker info |grep 'Node Address'`查看节点ip
+
+**Note**：*NODE?_HOSTNAME*一般为服务器的hostname
+
+默认参数：可以根据注释自行修改默认参数
 
 
 ### 4、服务启动
@@ -291,23 +470,8 @@ zookeeper配置修改详细地址：https://github.com/docker-library/docs/tree/
 详细文档地址：https://github.com/wurstmeister/kafka-docker
 
 ##### redis
-- 当reids启动模式为redis服务器时，使用配置文件路径为 /data/redis.conf
-- 当redis启动模式为sentinel服务器时，使用配置文件路径为 /data/sentinel.conf
-- 可在env.sh修改redis的密码
-- 可在环境变量中修改的配置项为
-
-| 环境变量中的名称| 属性名称 |  默认值 | 所属文件|
-| :-----: | :---: | :-----:|:---:|
-| BIND_ID  |  bind | 0.0.0.0 | redis.conf |
-| SLAVEOF  |  slaveof| null | redis.conf|
-| PASSWORD | requirepass/masterauth | null | redis.conf|
-| PORT     | port | 6379/26379 | redis.conf/sentinel.conf |
-| SENTINEL_MASTER| sentinel monitor mymaster | null | sentinel.conf |
-| SENTINEL_DOWN_AFTER|sentinel down-after-milliseconds mymaster|30000|sentinel.conf|
-| SENTINEL_PARALLEL_SYNCS|sentinel parallel-syncs mymaster|1|sentinel.conf|
-| SENTINEL_FAILOVER_TIMEOUT| sentinel failover-timeout mymaster| 180000|sentinel.conf|
->修改redis相关配置时，如果环境边变量中包含则在环境变量中修改，否则修改redis文件夹下对应的redis.conf、sentinel配置文件，并重新构建镜像
->enviroment修改的参数将优先于修改配置文件
+- 可修改`redis/redis_template.conf`配置文件，这个为redis启动的模板配置文件
+>修改redis相关配置后，请删除每台服务器上的对应镜像，之后重新开始启动
 
 #### mongodb
 如果需要修改mongodb的服务参数，可在docker-stack.yml中的属性`entrypoint`后添加参数，详细请看mongod --help参数列表
@@ -317,11 +481,16 @@ zookeeper配置修改详细地址：https://github.com/docker-library/docs/tree/
 #### nifi
 - 启动nifi之前必须先启动zookeeper，nifi才能成功启动
 - 启动nifi之后必须启动nginx，否则将无法访问nifi提供的服务
+- 如果nifi需要开放端口供外部访问，需要修改nginx的配置文件
 - env.sh文件中提供了nifi的管理员密码(账号默认为admin)
+
 
 ####nginx
 nginx为外部访问nifi必备组件，必须在构建nifi之后才能构建nginx镜像。
 
+
+#### emqx
+emqx必须在mysql启动之后，emqx会使用mysql存储用户相关信息，添加或修改用户时请注意env.sh文件中的格式说明
 
 
 ## 启动微服务

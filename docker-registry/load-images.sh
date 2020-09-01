@@ -45,14 +45,18 @@ do
 done
 echo -e "\033[32m打标已完成\033[0m"
 
-
-
+registry_volume="docker-registry-data-volumes"
+#检测卷 docker-registry-data-volume 是否创建
+if [ $(docker volume ls --filter "name=$registry_volume" --format {{.Name}}|wc -l) -eq 0 ]; then
+    #创建卷
+    docker volume create $registry_volume
+fi
 
 
 
 echo -e "\033[33m开始启动docker-registry容器\033[0m"
 docker run -d --name registry -p ${REGISTRY_PORT}:5000 \
--v ${REGISTRY_STORAGE}:/var/lib/registry \
+-v ${registry_volume}:/var/lib/registry \
 --restart=always registry:2
 sleep 3
 echo -e "\033[32mdocker-registry容器已启动\033[0m"
@@ -70,3 +74,14 @@ done
 
 echo -e "\033[32m镜像已推送至私服\033[0m"
 
+
+# 删除所有本地镜像(registry除外)
+#echo -e "\033[33m开始删除多余镜像\033[0m"
+#for var in $(docker images --format "{{.Repository}}:{{.Tag}}")
+#do
+#    if [ $(echo $var|grep "registry"|wc -l) -eq 0 ]; then
+#        docker rmi $var
+#    fi
+#done
+#
+#echo -e "\033[32m多余镜像删除完毕\033[0m"

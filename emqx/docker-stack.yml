@@ -1,0 +1,214 @@
+version: '3.8'
+services:
+  emqx1:
+    image: ${REGISTRY}${emqx_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
+    ports:
+      - target: 1883
+        published: ${emqx_outer_mqtt_tcp_port}
+        protocol: tcp
+        mode: host
+      - target: 18083
+        published: ${emqx_outer_dashboard_port}
+        protocol: tcp
+        mode: host
+      - target: 5369
+        published: ${emqx_outer_tcp_server_port}
+        protocol: tcp
+        mode: host
+      - target: 6369
+        published: ${emqx_outer_distributed_node_port}
+        protocol: tcp
+        mode: host
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.nodename==${NODE1_TAG}
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+    environment:
+      TZ: "Asia/Shanghai"
+      #启用的插件
+      EMQX_LOADED_PLUGINS: "emqx_management,emqx_recon,emqx_retainer,emqx_dashboard,emqx_auth_mysql"
+      #etc/emqx.conf 开启集群模式所需修改的参数
+      EMQX_CLUSTER__NAME: emqx1
+      EMQX_CLUSTER__DISCOVERY: static
+      EMQX_CLUSTER__STATIC__SEEDS: emqx1@emqx1.emqx.io,emqx2@emqx2.emqx.io,emqx3@emqx3.emqx.io
+      EMQX_NAME: emqx1
+      EMQX_HOST: emqx1.emqx.io
+      EMQX_LOG__LEVEL: info
+      ## 不使用匿名认证
+      EMQX_ALLOW_ANONYMOUS: "false"
+      ## 没有匹配的acl则拒绝
+      EMQX_ACL_NOMATCH: "deny"
+      # emqx_auth_mysql相关设置
+      EMQX_AUTH__MYSQL__SERVER: ${emqx_mysql_server}
+      EMQX_AUTH__MYSQL__USERNAME: ${emqx_mysql_username}
+      EMQX_AUTH__MYSQL__PASSWORD: ${emqx_mysql_password}
+      EMQX_AUTH__MYSQL__PASSWORD_HASH: plain
+    volumes:
+      - emqx1-log-volume:/opt/emqx/log
+      - emqx1-data-volume:/opt/emqx/data
+      - emqx1-lib-volume:/opt/emqx/lib
+      - emqx1-etc-volume:/opt/emqx/etc
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      ddc_network:
+        aliases:
+          - emqx1.emqx.io
+  emqx2:
+    image: ${REGISTRY}${emqx_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
+    ports:
+      - target: 1883
+        published: ${emqx_outer_mqtt_tcp_port}
+        protocol: tcp
+        mode: host
+      - target: 18083
+        published: ${emqx_outer_dashboard_port}
+        protocol: tcp
+        mode: host
+      - target: 5369
+        published: ${emqx_outer_tcp_server_port}
+        protocol: tcp
+        mode: host
+      - target: 6369
+        published: ${emqx_outer_distributed_node_port}
+        protocol: tcp
+        mode: host
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.nodename==${NODE2_TAG}
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+    environment:
+      TZ: "Asia/Shanghai"
+      #启用的插件
+      EMQX_LOADED_PLUGINS: "emqx_management,emqx_recon,emqx_retainer,emqx_dashboard,emqx_auth_mysql"
+      #etc/emqx.conf 开启集群模式所需修改的参数
+      EMQX_CLUSTER__NAME: emqx2
+      EMQX_CLUSTER__DISCOVERY: static
+      EMQX_CLUSTER__STATIC__SEEDS: emqx1@emqx1.emqx.io,emqx2@emqx2.emqx.io,emqx3@emqx3.emqx.io
+      EMQX_NAME: emqx2
+      EMQX_HOST: emqx2.emqx.io
+      EMQX_LOG__LEVEL: info
+      ## 不使用匿名认证
+      EMQX_ALLOW_ANONYMOUS: "false"
+      ## 没有匹配的acl则拒绝
+      EMQX_ACL_NOMATCH: "deny"
+      # emqx_auth_mysql相关设置
+      EMQX_AUTH__MYSQL__SERVER: ${emqx_mysql_server}
+      EMQX_AUTH__MYSQL__USERNAME: ${emqx_mysql_username}
+      EMQX_AUTH__MYSQL__PASSWORD: ${emqx_mysql_password}
+      EMQX_AUTH__MYSQL__PASSWORD_HASH: plain
+    volumes:
+      - emqx2-log-volume:/opt/emqx/log
+      - emqx2-data-volume:/opt/emqx/data
+      - emqx2-lib-volume:/opt/emqx/lib
+      - emqx2-etc-volume:/opt/emqx/etc
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      ddc_network:
+        aliases:
+          - emqx2.emqx.io
+  emqx3:
+    image: ${REGISTRY}${emqx_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
+    ports:
+      - target: 1883
+        published: ${emqx_outer_mqtt_tcp_port}
+        protocol: tcp
+        mode: host
+      - target: 18083
+        published: ${emqx_outer_dashboard_port}
+        protocol: tcp
+        mode: host
+      - target: 5369
+        published: ${emqx_outer_tcp_server_port}
+        protocol: tcp
+        mode: host
+      - target: 6369
+        published: ${emqx_outer_distributed_node_port}
+        protocol: tcp
+        mode: host
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.nodename==${NODE3_TAG}
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 10
+        window: 120s
+    environment:
+      TZ: "Asia/Shanghai"
+      #启用的插件
+      EMQX_LOADED_PLUGINS: "emqx_management,emqx_recon,emqx_retainer,emqx_dashboard,emqx_auth_mysql"
+      #etc/emqx.conf 开启集群模式所需修改的参数
+      EMQX_CLUSTER__NAME: emqx3
+      EMQX_CLUSTER__DISCOVERY: static
+      EMQX_CLUSTER__STATIC__SEEDS: emqx1@emqx1.emqx.io,emqx2@emqx2.emqx.io,emqx3@emqx3.emqx.io
+      EMQX_NAME: emqx3
+      EMQX_HOST: emqx3.emqx.io
+      EMQX_LOG__LEVEL: info
+      ## 不使用匿名认证
+      EMQX_ALLOW_ANONYMOUS: "false"
+      ## 没有匹配的acl则拒绝
+      EMQX_ACL_NOMATCH: "deny"
+      # emqx_auth_mysql相关设置
+      EMQX_AUTH__MYSQL__SERVER: ${emqx_mysql_server}
+      EMQX_AUTH__MYSQL__USERNAME: ${emqx_mysql_username}
+      EMQX_AUTH__MYSQL__PASSWORD: ${emqx_mysql_password}
+      EMQX_AUTH__MYSQL__PASSWORD_HASH:q: plain
+    volumes:
+      - emqx3-log-volume:/opt/emqx/log
+      - emqx3-data-volume:/opt/emqx/data
+      - emqx3-lib-volume:/opt/emqx/lib
+      - emqx3-etc-volume:/opt/emqx/etc
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      ddc_network:
+        aliases:
+          - emqx3.emqx.io
+volumes:
+  emqx1-log-volume:
+  emqx1-data-volume:
+  emqx1-lib-volume:
+  emqx1-etc-volume:
+  emqx2-log-volume:
+  emqx2-data-volume:
+  emqx2-lib-volume:
+  emqx2-etc-volume:
+  emqx3-log-volume:
+  emqx3-data-volume:
+  emqx3-lib-volume:
+  emqx3-etc-volume:
+networks:
+  ddc_network:
+    external: true
+    name: ${NETWORK}

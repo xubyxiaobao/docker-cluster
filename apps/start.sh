@@ -19,7 +19,7 @@ export STACK_NAME=$1
 export MICRO_SERVER="gridsum/${STACK_NAME}"
 export MICRO_VERSION=$(date +%Y%m%d%H%M%S)
 
-docker build  --build-arg REGISTRY=${REGISTRY} --build-arg package=$(basename $jar_file)  -t "${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}"  ${base_dir}/
+docker build  --build-arg REGISTRY=${REGISTRY} --build-arg BASIC_IMAGE=${basic_jdk_image} --build-arg package=$(basename $jar_file)  -t "${REGISTRY}${MICRO_SERVER}:${MICRO_VERSION}"  ${base_dir}/
 
 if [ $? -ne 0 ]; then
     echo "构建失败"

@@ -2,9 +2,18 @@ version: '3.8'
 services:
   redis1:
     image: ${REGISTRY}${redis_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
-      - target: 6379
-        published: ${redis_out_port}
+      - target: "${redis_master_out_port}"
+        published: "${redis_master_out_port}"
+        protocol: tcp
+        mode: host
+      - target: "1${redis_master_out_port}"
+        published: "1${redis_master_out_port}"
         protocol: tcp
         mode: host
     deploy:
@@ -22,20 +31,33 @@ services:
         limits:
           memory: ${redis_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
+      PORT: "${redis_master_out_port}"
       PASSWORD: ${redis_password}
       ANNOUNCE_IP: ${NODE1_IP}
-      ANNOUNCE_PORT: ${redis_out_port}
+      ANNOUNCE_PORT: "${redis_master_out_port}"
+      ANNOUNCE_BUS_PORT: "1${redis_master_out_port}"
     volumes:
       - redis1-volume:/data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - redis1
   redis2:
     image: ${REGISTRY}${redis_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
-      - target: 6379
-        published: ${redis_out_port}
+      - target: "${redis_master_out_port}"
+        published: "${redis_master_out_port}"
+        protocol: tcp
+        mode: host
+      - target: "1${redis_master_out_port}"
+        published: "1${redis_master_out_port}"
         protocol: tcp
         mode: host
     deploy:
@@ -52,24 +74,34 @@ services:
       resources:
         limits:
           memory: ${redis_container_memory}
-    depends_on:
-      - redis1
     environment:
+      TZ: "Asia/Shanghai"
+      PORT: "${redis_master_out_port}"
       PASSWORD: ${redis_password}
-      SLAVEOF: "${NODE1_IP} ${redis_out_port}"
       ANNOUNCE_IP: ${NODE2_IP}
-      ANNOUNCE_PORT: ${redis_out_port}
+      ANNOUNCE_PORT: "${redis_master_out_port}"
+      ANNOUNCE_BUS_PORT: "1${redis_master_out_port}"
     volumes:
       - redis2-volume:/data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - redis2
   redis3:
     image: ${REGISTRY}${redis_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
-      - target: 6379
-        published: ${redis_out_port}
+      - target: "${redis_master_out_port}"
+        published: "${redis_master_out_port}"
+        protocol: tcp
+        mode: host
+      - target: "1${redis_master_out_port}"
+        published: "1${redis_master_out_port}"
         protocol: tcp
         mode: host
     deploy:
@@ -86,24 +118,34 @@ services:
       resources:
         limits:
           memory: ${redis_container_memory}
-    depends_on:
-      - redis1
     environment:
+      TZ: "Asia/Shanghai"
+      PORT: "${redis_master_out_port}"
       PASSWORD: ${redis_password}
-      SLAVEOF: "${NODE1_IP} ${redis_out_port}"
       ANNOUNCE_IP: ${NODE3_IP}
-      ANNOUNCE_PORT: ${redis_out_port}
+      ANNOUNCE_PORT: "${redis_master_out_port}"
+      ANNOUNCE_BUS_PORT: "1${redis_master_out_port}"
     volumes:
       - redis3-volume:/data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - redis3
-  sentinel1:
+  redis4:
     image: ${REGISTRY}${redis_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
-      - target: 26379
-        published: ${redis_sentinel_out_port}
+      - target: "${redis_slave_out_port}"
+        published: "${redis_slave_out_port}"
+        protocol: tcp
+        mode: host
+      - target: "1${redis_slave_out_port}"
+        published: "1${redis_slave_out_port}"
         protocol: tcp
         mode: host
     deploy:
@@ -119,29 +161,35 @@ services:
         window: 120s
       resources:
         limits:
-          memory: ${redis_sentinel_container_memory}
+          memory: ${redis_container_memory}
     environment:
-      PORT: 26379
-      SENTINEL_MASTER: "${NODE1_IP} ${redis_out_port} 2"
-      SENTINEL_AUTHPASS: ${redis_password}
+      TZ: "Asia/Shanghai"
+      PORT: "${redis_slave_out_port}"
+      PASSWORD: ${redis_password}
       ANNOUNCE_IP: ${NODE1_IP}
-      ANNOUNCE_PORT: ${redis_sentinel_out_port}
-    command: redis-sentinel
-    depends_on:
-      - redis1
-      - redis2
-      - redis3
+      ANNOUNCE_PORT: "${redis_slave_out_port}"
+      ANNOUNCE_BUS_PORT: "1${redis_slave_out_port}"
     volumes:
-      - sentinel1-volume:/data
+      - redis4-volume:/data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
-          - sentinel1
-  sentinel2:
+          - redis4
+  redis5:
     image: ${REGISTRY}${redis_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
-      - target: 26379
-        published: ${redis_sentinel_out_port}
+      - target: "${redis_slave_out_port}"
+        published: "${redis_slave_out_port}"
+        protocol: tcp
+        mode: host
+      - target: "1${redis_slave_out_port}"
+        published: "1${redis_slave_out_port}"
         protocol: tcp
         mode: host
     deploy:
@@ -157,29 +205,35 @@ services:
         window: 120s
       resources:
         limits:
-          memory: ${redis_sentinel_container_memory}
+          memory: ${redis_container_memory}
     environment:
-      PORT: 26379
-      SENTINEL_MASTER: "${NODE1_IP} ${redis_out_port} 2"
-      SENTINEL_AUTHPASS: ${redis_password}
+      TZ: "Asia/Shanghai"
+      PORT: "${redis_slave_out_port}"
+      PASSWORD: ${redis_password}
       ANNOUNCE_IP: ${NODE2_IP}
-      ANNOUNCE_PORT: ${redis_sentinel_out_port}
-    command: redis-sentinel
-    depends_on:
-      - redis1
-      - redis2
-      - redis3
+      ANNOUNCE_PORT: "${redis_slave_out_port}"
+      ANNOUNCE_BUS_PORT: "1${redis_slave_out_port}"
     volumes:
-      - sentinel2-volume:/data
+      - redis5-volume:/data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
-          - sentinel2
-  sentinel3:
+          - redis5
+  redis6:
     image: ${REGISTRY}${redis_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
-      - target: 26379
-        published: ${redis_sentinel_out_port}
+      - target: "${redis_slave_out_port}"
+        published: "${redis_slave_out_port}"
+        protocol: tcp
+        mode: host
+      - target: "1${redis_slave_out_port}"
+        published: "1${redis_slave_out_port}"
         protocol: tcp
         mode: host
     deploy:
@@ -195,33 +249,29 @@ services:
         window: 120s
       resources:
         limits:
-          memory: ${redis_sentinel_container_memory}
+          memory: ${redis_container_memory}
     environment:
-      PORT: 26379
-      SENTINEL_MASTER: "${NODE1_IP} ${redis_out_port} 2"
-      SENTINEL_AUTHPASS: ${redis_password}
+      TZ: "Asia/Shanghai"
+      PORT: "${redis_slave_out_port}"
+      PASSWORD: ${redis_password}
       ANNOUNCE_IP: ${NODE3_IP}
-      ANNOUNCE_PORT: ${redis_sentinel_out_port}
-    command: redis-sentinel
-    depends_on:
-      - redis1
-      - redis2
-      - redis3
+      ANNOUNCE_PORT: "${redis_slave_out_port}"
+      ANNOUNCE_BUS_PORT: "1${redis_slave_out_port}"
     volumes:
-      - sentinel3-volume:/data
+      - redis6-volume:/data
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
-          - sentinel3
-
+          - redis6
 
 volumes:
   redis1-volume:
   redis2-volume:
   redis3-volume:
-  sentinel1-volume:
-  sentinel2-volume:
-  sentinel3-volume:
+  redis4-volume:
+  redis5-volume:
+  redis6-volume:
 networks:
   ddc_network:
     external: true

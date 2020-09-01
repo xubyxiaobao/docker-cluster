@@ -2,6 +2,11 @@ version: '3.8'
 services:
   kafka1:
     image: ${REGISTRY}${kafka_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - target: ${kafka_out_port}
         published: ${kafka_out_port}
@@ -22,6 +27,9 @@ services:
         limits:
           memory: ${kafka_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG_DIRS: /kafka/kafka-logs
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${NODE1_IP}:${kafka_out_port}
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:${kafka_out_port}
@@ -29,15 +37,26 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_MAX_BYTES: 4096000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 6291456
+      KAFKA_MAX_REQUEST_SIZE: 15000000
+      KAFKA_LOG_RETENTION_HOURS: 10
     volumes:
       - kafka1-data-volume:/kafka
+      - kafka1-log-volume:/opt/kafka/logs
       - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - kafka1
   kafka2:
     image: ${REGISTRY}${kafka_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - target: ${kafka_out_port}
         published: ${kafka_out_port}
@@ -58,6 +77,9 @@ services:
         limits:
           memory: ${kafka_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
+      KAFKA_BROKER_ID: 2
+      KAFKA_LOG_DIRS: /kafka/kafka-logs
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${NODE2_IP}:${kafka_out_port}
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:${kafka_out_port}
@@ -65,15 +87,26 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_MAX_BYTES: 4096000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 6291456
+      KAFKA_MAX_REQUEST_SIZE: 15000000
+      KAFKA_LOG_RETENTION_HOURS: 10
     volumes:
       - kafka2-data-volume:/kafka
+      - kafka2-log-volume:/opt/kafka/logs
       - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - kafka2
   kafka3:
     image: ${REGISTRY}${kafka_image}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: ${CONTAINER_LOG_SIZE}
+        max-file: ${CONTAINER_LOG_NUMS}
     ports:
       - target: ${kafka_out_port}
         published: ${kafka_out_port}
@@ -94,6 +127,9 @@ services:
         limits:
           memory: ${kafka_container_memory}
     environment:
+      TZ: "Asia/Shanghai"
+      KAFKA_BROKER_ID: 3
+      KAFKA_LOG_DIRS: /kafka/kafka-logs
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
       KAFKA_ADVERTISED_LISTENERS: INSIDE://:9092,OUTSIDE://${NODE3_IP}:${kafka_out_port}
       KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:${kafka_out_port}
@@ -101,17 +137,26 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+      KAFKA_MESSAGE_MAX_BYTES: 4096000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 6291456
+      KAFKA_MAX_REQUEST_SIZE: 15000000
+      KAFKA_LOG_RETENTION_HOURS: 10
     volumes:
       - kafka3-data-volume:/kafka
+      - kafka3-log-volume:/opt/kafka/logs
       - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
     networks:
       ddc_network:
         aliases:
           - kafka3
 volumes:
   kafka1-data-volume:
+  kafka1-log-volume:
   kafka2-data-volume:
+  kafka2-log-volume:
   kafka3-data-volume:
+  kafka3-log-volume:
 networks:
   ddc_network:
     external: true
